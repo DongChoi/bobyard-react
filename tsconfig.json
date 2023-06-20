@@ -28,8 +28,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/welcome/[user]",
-    "src/app/welcome/[userId]/page.jsx"
+    "src/app/tasks/[task]",
+    "src/app/tasks/[userId]/page.jsx"
   ],
   "exclude": ["node_modules"]
 }
