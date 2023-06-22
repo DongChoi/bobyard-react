@@ -3,46 +3,53 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import { getProviders, signIn, signOut, useSession } from "next-auth/react";
 const Nav = () => {
-  const isUserLoggedIn = true;
+  const { data: session } = useSession();
   //next-auth JS
-  const [providers, setProviders] = useState(null);
+  console.log(session);
+  const [providers, setProviders] = useState<Record<string, any> | null>(null);
   const [toggleDropDown, setToggleDropDown] = useState(false);
   useEffect(() => {
-    const setProviders = async () => {
+    const setUpProviders = async () => {
       const response = await getProviders();
-
+      console.log(response);
       setProviders(response);
     };
+    setUpProviders();
   }, []);
+
   return (
-    <nav className="flex-between w-full mb-16 pt-3">
-      <Link href="/" className="flex gap-2 flex-center">
-        Profile
+    <nav className="bg-blue-300 flex w-full gap-4  p-2">
+      <Link href="/" className="flex ">
+        Home
         <Image
-          src="@/public/next.svg"
+          src="/checklist.png"
           width={30}
           height={30}
           alt="profile logo"
-          className="object-contain"
+          className="object-contain fill-white"
         />
       </Link>
 
       {/* Desktop navigation */}
+      <Link href="/tasks">
+        {/* <Image/> */}
+        Tasks
+      </Link>
       <div className="sm:flex hidden">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <Link href="/create-task" className="black_btn">
               Create Task
             </Link>
-            <button type="button" onClick={signOut} className="outline_btn">
+            <button
+              type="button"
+              onClick={() => signOut()}
+              className="outline_btn absolute right-0"
+            >
               Sign Out{" "}
             </button>
-            <Link href="/tasks">
-              {/* <Image/> */}
-              Tasks
-            </Link>
           </div>
         ) : (
           <>
@@ -53,7 +60,9 @@ const Nav = () => {
                   type="button"
                   key={provider.name}
                   onClick={() => signIn(provider.id)}
-                ></button>
+                >
+                  SignIn
+                </button>
               ))}
           </>
         )}
@@ -61,7 +70,7 @@ const Nav = () => {
 
       {/* mobile navigation */}
       <div className="sm:hidden flex relative">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div>
             <button onClick={() => setToggleDropDown((prev) => !prev)}>
               log in
@@ -79,6 +88,7 @@ const Nav = () => {
                   type="button"
                   onClick={() => {
                     setToggleDropDown(false);
+                    console.log("signing out?");
                     signOut();
                   }}
                 >

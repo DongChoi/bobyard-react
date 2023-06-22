@@ -1,4 +1,4 @@
-import NextAuth, { Session } from "next-auth";
+import NextAuth, { AuthOptions, Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 const handler = NextAuth({
@@ -9,8 +9,8 @@ const handler = NextAuth({
     }),
   ],
 
-  async session({ session }: { session: Session }) {
-    console.log("kewl");
+  async session({ session }) {
+    return session;
   },
   async signIn({ profile }) {
     try {

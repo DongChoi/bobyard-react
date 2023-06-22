@@ -1,11 +1,13 @@
 import Nav from "@/components/Nav";
-import "./globals.css";
 import { Inter } from "next/font/google";
 import { Provider } from "@/components/Provider";
+//when using metadata, you have to Type the next's Metadata type
+import { Metadata } from "next";
+import "./globals.css";
 //this is where i think i will add session cookies
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Productiver",
   description: "Todo List by Andrew Choi",
 };
@@ -17,17 +19,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <Provider>
-          <div className="main">
-            <div className="gradient" />
-          </div>
+      <Provider>
+        <body className="bg-purple-200">
           <main className="app">
             <Nav />
             {children}
           </main>
-        </Provider>
-      </body>
+        </body>
+      </Provider>
     </html>
   );
 }
