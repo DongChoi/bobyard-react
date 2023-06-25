@@ -20,33 +20,16 @@ const Nav = () => {
   }, []);
 
   return (
-    <nav className="bg-blue-300 flex w-full gap-4  p-2">
-      <Link href="/" className="flex ">
-        Home
-        <Image
-          src="/checklist.png"
-          width={30}
-          height={30}
-          alt="profile logo"
-          className="object-contain fill-white"
-        />
-      </Link>
-
+    <nav className="bg-blue-300 flex w-full gap-4  p-3">
       {/* Desktop navigation */}
-      <Link href="/tasks">
-        {/* <Image/> */}
-        Tasks
-      </Link>
+      <b>Productiver</b>
       <div className="sm:flex hidden">
         {session?.user ? (
           <div className="flex gap-3 md:gap-5">
-            <Link href="/create-task" className="black_btn">
-              Create Task
-            </Link>
             <button
               type="button"
               onClick={() => signOut()}
-              className="outline_btn absolute right-0"
+              className="outline_btn absolute right-3"
             >
               Sign Out{" "}
             </button>
