@@ -52,14 +52,14 @@ const Nav = () => {
       </div>
 
       {/* mobile navigation */}
-      <div className="sm:hidden flex relative">
+      <div className="sm:hidden flex-column relative">
         {session?.user ? (
           <div>
             <button onClick={() => setToggleDropDown((prev) => !prev)}>
-              log in
+              dropdown
             </button>
             {toggleDropDown && (
-              <div className="dropdown">
+              <div className="dropdown flex">
                 <Link
                   href="/tasks"
                   className="dropdown_link"
@@ -71,7 +71,6 @@ const Nav = () => {
                   type="button"
                   onClick={() => {
                     setToggleDropDown(false);
-                    console.log("signing out?");
                     signOut();
                   }}
                 >

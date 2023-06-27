@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { Session, getServerSession } from "next-auth";
 import { NextApiRequest } from "next";
+import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 
@@ -17,6 +18,9 @@ const prisma = new PrismaClient();
 //   }
 
 export async function POST(req: NextRequest) {
+  // const cookieStore = cookies();
+  // const token = cookieStore.get("token");
+  // console.log("cookies", token.value);
   const data = await req.json();
   console.log("data", data);
   const session = data.session;
@@ -73,5 +77,62 @@ export async function POST(req: NextRequest) {
           "something went wrong in the application, report how to replicate this issue",
       });
     }
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  const data = await req.json();
+  const taskId = data.taskId;
+  console.log("Attempting to delete taske");
+  try {
+    const deletedTask = await prisma.task.delete({
+      where: {
+        id: taskId,
+      },
+    });
+
+    console.log("task deleted, here is the response: \n", deletedTask);
+    await prisma.$disconnect();
+    return NextResponse.json({
+      status: "Successfully created task!!",
+      deletedTask,
+    });
+  } catch (e) {
+    console.log("ut-oh, something went wrong when deleting the task!", e);
+    return NextResponse.json({
+      error: e,
+      message:
+        "something went wrong in the application, report how to replicate this issue",
+    });
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  const data = await req.json();
+  const taskId = data.taskId;
+  const taskPayload = data.Payload;
+  console.log("Attempting to delete taske");
+  try {
+    const updatedTask = await prisma.task.update({
+      where: {
+        id: taskId,
+      },
+      //if i wanted to i can sanitize the data.
+      data: taskPayload,
+    });
+
+    console.log("task deleted, here is the response: \n", updatedTask);
+    await prisma.$disconnect();
+    return NextResponse.json({
+      status: "Successfully created task!!",
+      updatedTask,
+    });
+  } catch (e) {
+    console.log("ut-oh, something went wrong when updating the task!", e);
+    return NextResponse.json({
+      error: e,
+      message:
+        "something went wrong in the application, report how to replicate this issue",
+    });
   }
 }

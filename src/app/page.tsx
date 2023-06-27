@@ -56,11 +56,14 @@ const Home = () => {
   }, [session]);
   //View all tasks, and sort by title, status, and due date
   async function removeTask(taskId: Number) {
-    const resp = await axios.post("api/tasks", {
-      session: session?.user,
-      taskId,
-    });
-    return resp;
+    try {
+      const resp = await axios.delete(`api/tasks/${taskId}`);
+    } catch (e) {
+      console.log(e);
+    }
+    const updatedTasks = tasks.filter((task) => task.id !== taskId);
+    setTasks(updatedTasks);
+    //add animation to show that deletion was successful!
   }
   async function addTask(taskData: Task) {
     const resp = await axios.post("api/tasks", {
@@ -78,22 +81,18 @@ const Home = () => {
     <>
       {toggleCreateTask && <Form cancelForm={cancelForm} addTask={addTask} />}
       {session?.user ? (
-        <section className="border flex">
-          <b className="ml-3 mr-3">{session.user.name}&apos;s Tasks</b>
-          <TableContainer component={Paper}>
+        <section className="mt-4 mr-6 ml-2 flex-col">
+          <b className="mr-3 ml-2">{session.user.name}&apos;s Tasks</b>
+          <TableContainer className="m-2 mt-4" component={Paper}>
             <Table aria-label="collapsible table">
               <TableHead>
                 <TableRow>
-                  <TableCell align="right">Symbol &nbsp;</TableCell>
-                  <TableCell align="right">Purchase Date &nbsp;</TableCell>
-                  <TableCell align="right">Qty &nbsp;</TableCell>
-                  <TableCell align="right">Amount Invested &nbsp;</TableCell>
-                  <TableCell align="right">Purchase Price &nbsp;</TableCell>
-                  <TableCell align="right">Current Price &nbsp;</TableCell>
-                  <TableCell align="right">Position Value &nbsp;</TableCell>
-                  <TableCell align="right">% gain/loss &nbsp;</TableCell>
-                  <TableCell align="right">$ gain/loss &nbsp;</TableCell>
-                  <TableCell align="right">remove &nbsp;</TableCell>
+                  <TableCell align="right"></TableCell>
+                  <TableCell align="right">Status&nbsp;&nbsp;</TableCell>
+                  <TableCell align="right">Due Date&nbsp;&nbsp;</TableCell>
+                  <TableCell align="right">Title&nbsp;&nbsp;</TableCell>
+                  <TableCell align="right">Created &nbsp;&nbsp;</TableCell>
+                  <TableCell align="right">remove&nbsp;&nbsp;</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -110,12 +109,13 @@ const Home = () => {
             </Table>
           </TableContainer>
           <button
+            className="rounded p-4 bg-red-400 m-2"
             onClick={(evt) => {
               evt.preventDefault();
               SetToggleCreateTask(true);
             }}
           >
-            Add Task
+            New Task
           </button>
         </section>
       ) : (
