@@ -11,16 +11,18 @@ interface Task {
   finished_date: Date;
 }
 
-const Tasks = ({ filter, tasks }: { filter: string; tasks: Task[] }) => {
+const Tasks = ({
+  removeTask,
+  filter,
+  task,
+}: {
+  removeTask: Function;
+  filter: string;
+  task: Task;
+}) => {
   function filterTasks() {}
-
-  return (
-    <div>
-      {tasks.map((task) => {
-        return <div>{task}</div>;
-      })}
-    </div>
-  );
+  console.log("task", task);
+  return <div>{task.id}</div>;
 };
 
 export default Tasks;

@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   console.log("data", data);
   const session = data.session;
   const task = data.taskData;
-  console.log("task", task);
+  console.log("task", task, "\n SESSION:", session);
   if (session === undefined) {
     return NextResponse.json({
       status: "please log in before accessing our website :)",
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         },
       });
       console.log("user fetched in tasks", user);
-      await prisma.$disconnect();
+      // await prisma.$disconnect();
       if (!user) {
         return NextResponse.json({
           status: "please log in before accessing our website :)",
@@ -46,15 +46,17 @@ export async function POST(req: NextRequest) {
       } else {
         console.log("user was found", task);
         const newTask = await prisma.task.create({
+          //
           data: {
             title: task.title,
             description: task.description,
-            due_date: task.due_date,
-            user: {
-              connect: {
-                id: task.userId,
-              },
-            },
+            due_date: new Date(task.due_date),
+            userId: task.userId,
+            // user: {
+            //   connect: {
+            //     id: task.userId,
+            //   },
+            // },
           },
         });
         console.log("newTask", newTask);
@@ -64,6 +66,7 @@ export async function POST(req: NextRequest) {
         });
       }
     } catch (e) {
+      console.log(e);
       return NextResponse.json({
         error: e,
         message:
