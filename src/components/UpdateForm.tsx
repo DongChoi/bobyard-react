@@ -14,29 +14,37 @@ interface Task {
   updatedAt?: Date;
   finished_date?: Date;
 }
-const Form = ({
-  addTask,
-  cancelForm,
-}: {
-  addTask: Function;
-  cancelForm: Function;
-}) => {
-  const initialFormData = { title: "", description: "", due_date: new Date() };
-  const [formData, setFormData] = useState(initialFormData);
-  const [calendarError, setCalendarError] = useState<boolean>(false);
-  const [titleError, setTitleError] = useState<boolean>(false);
 
+const UpdateForm = ({
+  updateTask,
+  cancelForm,
+  task,
+}: {
+  updateTask: Function;
+  cancelForm: Function;
+  task: Task;
+}) => {
+  const initialFormData = {
+    title: task?.title,
+    description: task?.description,
+    due_date: task?.due_date,
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
+  // const [calendarError, setCalendarError] = useState<boolean>(false);
+
+  const today = new Date();
   const handleFormSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     let validation = true;
-    console.log("duedate", formData.due_date);
-    if (!formData.due_date) {
-      setCalendarError(true);
+    // // validation for mui/datepicker
+    // if (!formData.due_date) {
+    //   setCalendarError(true);
 
-      validation = false;
-    }
+    //   validation = false;
+    // }
     if (validation == true) {
-      addTask(formData);
+      updateTask(task.id, formData);
     }
   };
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,7 +94,7 @@ const Form = ({
             />
           </DemoContainer>
         </LocalizationProvider>
-        {calendarError && (
+        {/* {calendarError && (
           <div
             className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
             role="alert"
@@ -107,14 +115,14 @@ const Form = ({
               </svg>
             </span>
           </div>
-        )}
+        )} */}
         <div className="flex absolute right-0 bottom-0 m-3">
           <button
             className="border-solid border-1 rounded bg-sky-200 mr-3 p-2"
             type="submit"
             color="primary"
           >
-            Add Task
+            Update
           </button>
           <button
             className="border-solid border-1 bg-red-200 rounded mr-3 p-2"
@@ -128,4 +136,4 @@ const Form = ({
   );
 };
 
-export default Form;
+export default UpdateForm;

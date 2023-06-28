@@ -16,6 +16,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import UpdateForm from "@/components/UpdateForm";
 //this is basically  app.tsx
 
 interface User {
@@ -26,14 +27,14 @@ interface User {
 }
 
 interface Task {
-  id?: number;
-  title: String;
-  description: String;
-  userId?: number;
+  id: number;
+  title: string;
+  description: string;
+  userId: number;
   created_at: Date;
   due_date: Date;
   updatedAt: Date;
-  finished_date: Date;
+  finished_date?: Date;
 }
 
 const Home = () => {
@@ -41,20 +42,48 @@ const Home = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [userId, setUserId] = useState<number | null>(null);
   const [filter, setFilter] = useState("all");
-  const [toggleCreateTask, SetToggleCreateTask] = useState(false);
+  const [toggleTaskForm, setToggleTaskForm] = useState<boolean>(false);
+  const [task, setTask] = useState<Task | null>(null);
   useEffect(() => {
     async function fetchUser() {
       if (session?.user) {
         const resp = await axios.post("/api/user/", { session: session.user });
-        console.log("resp", resp);
+
         setTasks(resp.data.user.tasks);
-        console.log("tasks =", tasks);
+
         setUserId(resp.data.user.id);
       }
     }
     fetchUser();
   }, [session]);
   //View all tasks, and sort by title, status, and due date
+
+  /************************* TASK PUT PATCH DELETE POST *************************/
+  async function addTask(taskData: Task) {
+    const resp = await axios.post("api/tasks", {
+      session: session?.user,
+      taskData: { ...taskData, userId: 1 },
+    });
+    setToggleTaskForm(false);
+  }
+
+  async function updateTask(taskId: Number, taskPayload: Task) {
+    try {
+      const resp: Task = await axios.patch(`api/tasks/${taskId}`, {
+        taskPayload,
+      });
+      const updatedTasks = tasks.map((item) => {
+        if (item.id === taskId) {
+          return resp;
+        }
+        return item;
+      });
+      setTasks(updatedTasks);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   async function removeTask(taskId: Number) {
     try {
       const resp = await axios.delete(`api/tasks/${taskId}`);
@@ -65,21 +94,28 @@ const Home = () => {
     setTasks(updatedTasks);
     //add animation to show that deletion was successful!
   }
-  async function addTask(taskData: Task) {
-    const resp = await axios.post("api/tasks", {
-      session: session?.user,
-      taskData: { ...taskData, userId: 1 },
-    });
-    console.log(resp, "new task?");
+
+  /*********************************** FORMS ***********************************/
+  function openUpdateForm(task: Task) {
+    setTask(task);
   }
-  async function updateTask() {}
-  async function completeTask() {}
+
   function cancelForm() {
-    SetToggleCreateTask(false);
+    setToggleTaskForm(false);
+    setTask(null);
   }
+
   return (
     <>
-      {toggleCreateTask && <Form cancelForm={cancelForm} addTask={addTask} />}
+      {toggleTaskForm && <Form cancelForm={cancelForm} addTask={addTask} />}
+      {task && (
+        <UpdateForm
+          cancelForm={cancelForm}
+          updateTask={updateTask}
+          task={task}
+        />
+      )}
+      {toggleTaskForm && <Form cancelForm={cancelForm} addTask={addTask} />}
       {session?.user ? (
         <section className="mt-4 mr-6 ml-2 flex-col">
           <b className="mr-3 ml-2">{session.user.name}&apos;s Tasks</b>
@@ -88,31 +124,40 @@ const Home = () => {
               <TableHead>
                 <TableRow>
                   <TableCell align="right"></TableCell>
-                  <TableCell align="right">Status&nbsp;&nbsp;</TableCell>
-                  <TableCell align="right">Due Date&nbsp;&nbsp;</TableCell>
-                  <TableCell align="right">Title&nbsp;&nbsp;</TableCell>
-                  <TableCell align="right">Created &nbsp;&nbsp;</TableCell>
-                  <TableCell align="right">remove&nbsp;&nbsp;</TableCell>
+                  <TableCell align="right">Status&nbsp;&nbsp;&nbsp;</TableCell>
+                  <TableCell align="right">
+                    Due Date&nbsp;&nbsp;&nbsp;
+                  </TableCell>
+                  <TableCell align="right">Title&nbsp;&nbsp;&nbsp;</TableCell>
+                  <TableCell align="right">Created&nbsp;&nbsp;&nbsp;</TableCell>
+                  <TableCell align="right">
+                    Finish Task&nbsp;&nbsp;&nbsp;
+                  </TableCell>
+                  <TableCell align="right">update&nbsp;&nbsp;&nbsp;</TableCell>
+                  <TableCell align="right">remove&nbsp;&nbsp;&nbsp;</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {tasks &&
-                  tasks.map((task) => (
+                  tasks.map((task, idx) => (
                     <Tasks
                       removeTask={removeTask}
                       key={task.id}
                       task={task}
+                      openUpdateForm={openUpdateForm}
                       filter={filter}
+                      updateTask={updateTask}
                     />
                   ))}
               </TableBody>
             </Table>
           </TableContainer>
           <button
-            className="rounded p-4 bg-red-400 m-2"
+            className="rounded p-4 bg-[#A8DADC] m-2"
+            //bg-blue-300
             onClick={(evt) => {
               evt.preventDefault();
-              SetToggleCreateTask(true);
+              setToggleTaskForm(true);
             }}
           >
             New Task

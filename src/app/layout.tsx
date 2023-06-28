@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Provider>
-        <body className="bg-purple-200">
+        <body className="bg-[#F1FAEE]">
           <main className="app">
             <Nav />
             {children}

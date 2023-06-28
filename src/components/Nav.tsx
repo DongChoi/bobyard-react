@@ -20,16 +20,16 @@ const Nav = () => {
   }, []);
 
   return (
-    <nav className="bg-blue-300 flex w-full gap-4  p-3">
+    <nav className="bg-[#E63946] flex w-full gap-4  p-3">
       {/* Desktop navigation */}
-      <b>Productiver</b>
+      <b className="text-[#F1FAEE]">Productiver</b>
       <div className="sm:flex hidden">
         {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <button
               type="button"
               onClick={() => signOut()}
-              className="outline_btn absolute right-3"
+              className=" text-[#F1FAEE] outline_btn absolute right-3"
             >
               Sign Out{" "}
             </button>

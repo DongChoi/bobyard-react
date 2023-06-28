@@ -3,6 +3,7 @@ import NextAuth, { JWT, Session } from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaClient } from "@prisma/client";
+import { cookies } from "next/headers";
 const prisma = new PrismaClient();
 const handler = NextAuth({
   providers: [
@@ -25,7 +26,6 @@ const handler = NextAuth({
       //   token.provider === "google"
       //     ? (token.providerAccountId as string)
       //     : (token.email as string);
-
       session.user.provider = token.provider as string;
       session.user.providerAccountId = token.providerAccountId as string;
       return session;
