@@ -69,19 +69,23 @@ const Home = () => {
 
   async function updateTask(taskId: Number, taskPayload: Task) {
     try {
-      const resp: Task = await axios.patch(`api/tasks/${taskId}`, {
+      console.log(taskId);
+      const resp = await axios.patch(`api/tasks/${taskId}`, {
         taskPayload,
       });
+      console.log("response", resp);
       const updatedTasks = tasks.map((item) => {
         if (item.id === taskId) {
-          return resp;
+          return resp.data.updatedTask;
         }
         return item;
       });
       setTasks(updatedTasks);
+      console.log("UPDATED TASKS", updatedTasks);
     } catch (e) {
       console.log(e);
     }
+    setTask(null);
   }
 
   async function removeTask(taskId: Number) {
@@ -115,7 +119,6 @@ const Home = () => {
           task={task}
         />
       )}
-      {toggleTaskForm && <Form cancelForm={cancelForm} addTask={addTask} />}
       {session?.user ? (
         <section className="mt-4 mr-6 ml-2 flex-col">
           <b className="mr-3 ml-2">{session.user.name}&apos;s Tasks</b>

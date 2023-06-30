@@ -77,16 +77,6 @@ export async function PATCH(
       status: "please log in before accessing our website :)",
     });
   }
-  if (taskPayload.stringToday && taskPayload.finished) {
-    const updatedTask = await prisma.task.update({
-      where: {
-        id: taskId,
-      },
-      data: {},
-    });
-  } else if (taskPayload.stringToday && !taskPayload.finished) {
-  }
-
   try {
     const user = await getUser(String(token.providerAccountId));
     const targetTask = await getTask(taskId);
@@ -99,9 +89,39 @@ export async function PATCH(
     // check if user is owner of task
     if (user.id !== targetTask?.userId) {
       return NextResponse.json({
-        status: "You do not own the task or task does not exist.",
+        status: "You do not own the task or the task does not exist.",
       });
     }
+    console.log(
+      "checking to see if this update request is to finish or unfinish task"
+    );
+    if (taskPayload.stringToday && taskPayload.finished) {
+      console.log("---------String Today", taskPayload.stringToday);
+      const updatedTask = await prisma.task.update({
+        where: {
+          id: taskId,
+        },
+        data: { finished_date: new Date(taskPayload.stringToday) },
+      });
+      return NextResponse.json({
+        status: "Successfully finished task!!",
+        updatedTask,
+      });
+    } else if (taskPayload.stringToday && !taskPayload.finished) {
+      const updatedTask = await prisma.task.update({
+        where: {
+          id: taskId,
+        },
+        data: { finished_date: null },
+      });
+      return NextResponse.json({
+        status: "Successfully unfinished task!!",
+        updatedTask,
+      });
+    }
+    console.log(
+      "finish task check failed, proceeding to update res of the data in task"
+    );
     const sanitizedPayload = sanitizePayload(taskPayload);
     const updatedTask = await prisma.task.update({
       where: {
@@ -114,7 +134,7 @@ export async function PATCH(
     console.log("task updated, here is the response: \n", updatedTask);
     await prisma.$disconnect();
     return NextResponse.json({
-      status: "Successfully created task!!",
+      status: "Successfully updated task!!",
       updatedTask,
     });
   } catch (e) {
@@ -156,7 +176,7 @@ function sanitizePayload(taskPayload: UpdateData) {
   }
 
   if (taskPayload.due_date) {
-    updateData.due_date = taskPayload.due_date;
+    updateData.due_date = new Date(taskPayload.due_date);
   }
   return updateData;
 }

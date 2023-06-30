@@ -50,14 +50,16 @@ const Tasks = ({
     ? new Date(task.finished_date).toLocaleDateString()
     : "In Progress";
   const status =
-    finishedDate == "In Progress"
-      ? "In Progress"
-      : today > dateDue
+    finishedDate == "In Progress" && today > dateDue
       ? "Past Due"
+      : finishedDate == "In Progress"
+      ? "In Progress"
       : "Completed";
   const handleRemoveClick = (taskId: Number) => {
     removeTask(taskId);
   };
+  console.log(task.id, "task.finishedDate", task.finished_date);
+  console.log("finishedDate", finishedDate);
 
   const handleToggleTask = () => {
     const stringToday = today.toLocaleDateString();
@@ -108,12 +110,13 @@ const Tasks = ({
         <TableCell align="right">
           {dateCreated.toLocaleDateString()}&nbsp;&nbsp;&nbsp;
         </TableCell>
+
         <TableCell align="right">
-          {finishedDate === "Completed" ? (
-            <Checkbox {...label} onClick={handleToggleTask} defaultChecked />
-          ) : (
-            <Checkbox {...label} onClick={handleToggleTask} />
-          )}
+          <Checkbox
+            {...label}
+            onClick={handleToggleTask}
+            checked={status === "Completed" ? true : false}
+          />
         </TableCell>
         <TableCell align="right">
           <UpdateIcon
