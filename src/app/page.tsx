@@ -62,7 +62,7 @@ const Home = () => {
   async function addTask(taskData: Task) {
     const resp = await axios.post("api/tasks", {
       session: session?.user,
-      taskData: { ...taskData, userId: 1 },
+      taskData: { ...taskData, userId: userId },
     });
     setToggleTaskForm(false);
   }
@@ -167,11 +167,13 @@ const Home = () => {
           </button>
         </section>
       ) : (
-        <section className=" w-full flex-center">
-          <h1 className="">You have reached Productiver</h1>
-          <span className="satoshi primary-orange">
-            We will help increase your productivity.
-          </span>
+        <section className="w-full flex-center">
+          <h1 className="flex justify-center items-center pt-5  bg-gradient-to-r from-red-500 to-yellow-500 text-transparent bg-clip-text">
+            You have reached Productiver
+          </h1>
+          <h3 className="flex justify-center pt-5">
+            App dedicated to increase productivity.
+          </h3>
         </section>
       )}
     </>
