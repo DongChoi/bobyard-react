@@ -29,7 +29,7 @@ const Form = ({
   const handleFormSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     let validation = true;
-    console.log("duedate", formData.due_date);
+    // console.log("duedate", formData.due_date);
     if (!formData.due_date) {
       setCalendarError(true);
 

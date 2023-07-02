@@ -58,8 +58,8 @@ const Tasks = ({
   const handleRemoveClick = (taskId: Number) => {
     removeTask(taskId);
   };
-  console.log(task.id, "task.finishedDate", task.finished_date);
-  console.log("finishedDate", finishedDate);
+  // console.log(task.id, "task.finishedDate", task.finished_date);
+  // console.log("finishedDate", finishedDate);
 
   const handleToggleTask = () => {
     const stringToday = today.toLocaleDateString();

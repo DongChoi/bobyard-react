@@ -71,11 +71,11 @@ const Home = () => {
 
   async function updateTask(taskId: Number, taskPayload: Task) {
     try {
-      console.log(taskId);
+      // console.log(taskId);
       const resp = await axios.patch(`api/tasks/${taskId}`, {
         taskPayload,
       });
-      console.log("response", resp);
+      // console.log("response", resp);
       const updatedTasks = tasks.map((item) => {
         if (item.id === taskId) {
           return resp.data.updatedTask;
@@ -83,7 +83,7 @@ const Home = () => {
         return item;
       });
       setTasks(updatedTasks);
-      console.log("UPDATED TASKS", updatedTasks);
+      // console.log("UPDATED TASKS", updatedTasks);
     } catch (e) {
       console.log(e);
     }
