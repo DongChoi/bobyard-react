@@ -64,6 +64,8 @@ const Home = () => {
       session: session?.user,
       taskData: { ...taskData, userId: userId },
     });
+    const updatedTasks = [...tasks, resp.data.newTask];
+    setTasks(updatedTasks);
     setToggleTaskForm(false);
   }
 
