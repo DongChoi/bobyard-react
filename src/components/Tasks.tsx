@@ -42,10 +42,12 @@ const Tasks = ({
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const [open, setOpen] = useState(false);
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const title = task.title;
   const description = task.description;
   const dateCreated = new Date(task.created_at);
   const dateDue = new Date(task.due_date);
+  dateDue.setHours(0, 0, 0, 0);
   const finishedDate = task.finished_date
     ? new Date(task.finished_date).toLocaleDateString()
     : "In Progress";
@@ -58,6 +60,8 @@ const Tasks = ({
   const handleRemoveClick = (taskId: Number) => {
     removeTask(taskId);
   };
+
+  console.log(title, "\n", today, "\n", dateDue, status, finishedDate);
   // console.log(task.id, "task.finishedDate", task.finished_date);
   // console.log("finishedDate", finishedDate);
 
