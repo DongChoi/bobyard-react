@@ -21,7 +21,11 @@ export async function POST(req: NextRequest) {
           providerAccountId: session.providerAccountId,
         },
         include: {
-          tasks: true,
+          tasks: {
+            orderBy: {
+              due_date: "desc",
+            },
+          },
         },
       });
 

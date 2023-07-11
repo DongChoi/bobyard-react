@@ -138,14 +138,16 @@ const Tasks = ({
           {/* &nbsp;&nbsp;&nbsp; */}
         </TableCell>
         <TableCell align="right">
-          <button
+          <Image
+            className="mx-auto pb-0 mr-3"
+            src="trash.svg"
+            alt="trash svg"
+            width={24}
+            height={24}
             onClick={() => {
               handleRemoveClick(task.id!);
             }}
-            style={{ backgroundColor: "white", border: "0px" }}
-          >
-            X&nbsp;&nbsp;&nbsp;&nbsp;
-          </button>
+          />
         </TableCell>
       </TableRow>
       <TableRow>
@@ -155,9 +157,11 @@ const Tasks = ({
               <Typography variant="h6" gutterBottom component="div">
                 Description
               </Typography>
-              <Typography variant="body1" gutterBottom component="div">
-                {description}
-              </Typography>
+              <pre>
+                <Typography variant="body1" gutterBottom component="div">
+                  {description}
+                </Typography>
+              </pre>
             </Box>
             <Box sx={{ margin: 1 }}>
               <Typography variant="button" gutterBottom component="div">

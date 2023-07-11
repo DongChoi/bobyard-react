@@ -66,6 +66,7 @@ const Home = () => {
       session: session?.user,
       taskData: { ...taskData, userId: userId },
     });
+    console.log(resp);
     const updatedTasks = [...tasks, resp.data.newTask];
     setTasks(updatedTasks);
     setToggleTaskForm(false);
@@ -128,7 +129,6 @@ const Home = () => {
           {/*hidden md:block*/}
           <section className="hidden md:block mt-4 mr-6 ml-2 flex-col">
             <b className="mr-3 ml-2">{session.user.name}&apos;s Tasks</b>
-            DESKTOP
             <TableContainer className="m-2 mt-4" component={Paper}>
               <Table aria-label="collapsible table">
                 <TableHead>
@@ -138,20 +138,20 @@ const Home = () => {
                       Status&nbsp;&nbsp;&nbsp;
                     </TableCell>
                     <TableCell align="right">
-                      Due Date&nbsp;&nbsp;&nbsp;
+                      Date Due&nbsp;&nbsp;&nbsp;
                     </TableCell>
                     <TableCell align="right">Title&nbsp;&nbsp;&nbsp;</TableCell>
                     <TableCell align="right">
                       Created&nbsp;&nbsp;&nbsp;
                     </TableCell>
                     <TableCell align="right">
-                      Finish Task&nbsp;&nbsp;&nbsp;
+                      Complete&nbsp;&nbsp;&nbsp;
                     </TableCell>
                     <TableCell align="right">
                       update&nbsp;&nbsp;&nbsp;
                     </TableCell>
                     <TableCell align="right">
-                      remove&nbsp;&nbsp;&nbsp;
+                      delete&nbsp;&nbsp;&nbsp;
                     </TableCell>
                   </TableRow>
                 </TableHead>
