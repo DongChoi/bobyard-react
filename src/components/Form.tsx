@@ -57,7 +57,7 @@ const Form = ({
     }
   };
 
-  const calculateTextAreaRows = (value) => {
+  const calculateTextAreaRows = (value: string): number => {
     const lineHeight = 18; // Adjust this value according to your textarea's line height
     const rows = Math.ceil(value.split("\n").length);
     return rows < 4 ? 4 : rows;
