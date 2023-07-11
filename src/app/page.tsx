@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@mui/material";
 import UpdateForm from "@/components/UpdateForm";
+import TasksMobile from "@/components/Tasks_mobile";
 //this is basically  app.tsx
 
 interface User {
@@ -59,6 +60,7 @@ const Home = () => {
   //View all tasks, and sort by title, status, and due date
 
   /************************* TASK PUT PATCH DELETE POST *************************/
+
   async function addTask(taskData: Task) {
     const resp = await axios.post("api/tasks", {
       session: session?.user,
@@ -122,52 +124,116 @@ const Home = () => {
         />
       )}
       {session?.user ? (
-        <section className="mt-4 mr-6 ml-2 flex-col">
-          <b className="mr-3 ml-2">{session.user.name}&apos;s Tasks</b>
-          <TableContainer className="m-2 mt-4" component={Paper}>
-            <Table aria-label="collapsible table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="right"></TableCell>
-                  <TableCell align="right">Status&nbsp;&nbsp;&nbsp;</TableCell>
-                  <TableCell align="right">
-                    Due Date&nbsp;&nbsp;&nbsp;
-                  </TableCell>
-                  <TableCell align="right">Title&nbsp;&nbsp;&nbsp;</TableCell>
-                  <TableCell align="right">Created&nbsp;&nbsp;&nbsp;</TableCell>
-                  <TableCell align="right">
-                    Finish Task&nbsp;&nbsp;&nbsp;
-                  </TableCell>
-                  <TableCell align="right">update&nbsp;&nbsp;&nbsp;</TableCell>
-                  <TableCell align="right">remove&nbsp;&nbsp;&nbsp;</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {tasks &&
-                  tasks.map((task, idx) => (
-                    <Tasks
-                      removeTask={removeTask}
-                      key={task.id}
-                      task={task}
-                      openUpdateForm={openUpdateForm}
-                      filter={filter}
-                      updateTask={updateTask}
-                    />
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <button
-            className="rounded p-4 bg-[#A8DADC] m-2"
-            //bg-blue-300
-            onClick={(evt) => {
-              evt.preventDefault();
-              setToggleTaskForm(true);
-            }}
-          >
-            New Task
-          </button>
-        </section>
+        <>
+          {/*hidden md:block*/}
+          <section className="hidden md:block mt-4 mr-6 ml-2 flex-col">
+            <b className="mr-3 ml-2">{session.user.name}&apos;s Tasks</b>
+            DESKTOP
+            <TableContainer className="m-2 mt-4" component={Paper}>
+              <Table aria-label="collapsible table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="right"></TableCell>
+                    <TableCell align="right">
+                      Status&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="right">
+                      Due Date&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="right">Title&nbsp;&nbsp;&nbsp;</TableCell>
+                    <TableCell align="right">
+                      Created&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="right">
+                      Finish Task&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="right">
+                      update&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="right">
+                      remove&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {tasks &&
+                    tasks.map((task, idx) => (
+                      <Tasks
+                        removeTask={removeTask}
+                        key={task.id}
+                        task={task}
+                        openUpdateForm={openUpdateForm}
+                        filter={filter}
+                        updateTask={updateTask}
+                      />
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <button
+              className="rounded p-4 bg-[#A8DADC] m-2"
+              //bg-blue-300
+              onClick={(evt) => {
+                evt.preventDefault();
+                setToggleTaskForm(true);
+              }}
+            >
+              New Task
+            </button>
+          </section>
+
+          {/* MOBILE */}
+          <section className="md:hidden mt-4 mr-6 ml-2 flex-col">
+            <b className="mr-3 ml-2">{session.user.name}&apos;s Tasks</b>
+            <TableContainer className="m-2 mt-4" component={Paper}>
+              <Table aria-label="collapsible table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell className="px-0" align="right"></TableCell>
+                    <TableCell align="left">Complete</TableCell>
+
+                    {/* <TableCell align="right">
+                      Due Date&nbsp;&nbsp;&nbsp;
+                    </TableCell> */}
+                    <TableCell align="left">Title&nbsp;&nbsp;&nbsp;</TableCell>
+                    {/* <TableCell align="right">
+                      Created&nbsp;&nbsp;&nbsp;
+                    </TableCell> */}
+                    {/* <TableCell align="right">
+                      update&nbsp;&nbsp;&nbsp;
+                    </TableCell> */}
+                    {/* <TableCell align="right">
+                      remove&nbsp;&nbsp;&nbsp;
+                    </TableCell> */}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {tasks &&
+                    tasks.map((task, idx) => (
+                      <TasksMobile
+                        removeTask={removeTask}
+                        key={task.id}
+                        task={task}
+                        openUpdateForm={openUpdateForm}
+                        filter={filter}
+                        updateTask={updateTask}
+                      />
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <button
+              className="rounded p-4 bg-[#A8DADC] m-2"
+              //bg-blue-300
+              onClick={(evt) => {
+                evt.preventDefault();
+                setToggleTaskForm(true);
+              }}
+            >
+              New Task
+            </button>
+          </section>
+        </>
       ) : (
         <section className="w-full flex-center">
           <h1 className="flex justify-center items-center pt-5  bg-gradient-to-r from-red-500 to-yellow-500 text-transparent bg-clip-text">

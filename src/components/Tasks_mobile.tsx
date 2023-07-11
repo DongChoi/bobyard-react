@@ -27,7 +27,7 @@ interface Task {
   finished_date?: Date;
 }
 
-const Tasks = ({
+const TasksMobile = ({
   removeTask,
   filter,
   task,
@@ -96,7 +96,14 @@ const Tasks = ({
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="right">
+        <TableCell align="left">
+          <Checkbox
+            {...label}
+            onClick={handleToggleTask}
+            checked={status === "Completed" ? true : false}
+          />
+        </TableCell>
+        {/* <TableCell align="right">
           <span
             className={
               status == "In Progress"
@@ -108,23 +115,16 @@ const Tasks = ({
           >
             {status}&nbsp;&nbsp;&nbsp;
           </span>
-        </TableCell>
-        <TableCell align="right">
+        </TableCell> */}
+        {/* <TableCell align="right">
           {dateDue.toLocaleDateString()}&nbsp;&nbsp;&nbsp;
-        </TableCell>
-        <TableCell align="right">{title}&nbsp;&nbsp;&nbsp;</TableCell>
-        <TableCell align="right">
+        </TableCell> */}
+        <TableCell align="left">{title}&nbsp;&nbsp;&nbsp;</TableCell>
+        {/* <TableCell align="right">
           {dateCreated.toLocaleDateString()}&nbsp;&nbsp;&nbsp;
-        </TableCell>
+        </TableCell> */}
 
-        <TableCell align="right">
-          <Checkbox
-            {...label}
-            onClick={handleToggleTask}
-            checked={status === "Completed" ? true : false}
-          />
-        </TableCell>
-        <TableCell align="right" className="">
+        {/* <TableCell align="right" className="">
           <Image
             className="mx-auto pb-0  mr-3"
             src="edit.svg"
@@ -135,9 +135,9 @@ const Tasks = ({
               openUpdateForm(task);
             }}
           />
-          {/* &nbsp;&nbsp;&nbsp; */}
-        </TableCell>
-        <TableCell align="right">
+          &nbsp;&nbsp;&nbsp;
+        </TableCell> */}
+        {/* <TableCell align="right">
           <button
             onClick={() => {
               handleRemoveClick(task.id!);
@@ -146,7 +146,7 @@ const Tasks = ({
           >
             X&nbsp;&nbsp;&nbsp;&nbsp;
           </button>
-        </TableCell>
+        </TableCell> */}
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -175,4 +175,4 @@ const Tasks = ({
   );
 };
 
-export default Tasks;
+export default TasksMobile;

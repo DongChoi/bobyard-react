@@ -63,7 +63,7 @@ const UpdateForm = ({
   return (
     <div>
       <form
-        className="flex flex-col rounded shadow-2xl pb-14 border-solid border-2 bg-slate-100 border-slate-600 fixed my-auto p-7 mt-7 inset-x-0 w-3/6 mx-auto"
+        className="flex flex-col rounded shadow-2xl pb-14 border-solid border-2 bg-slate-100 border-slate-600 fixed my-auto p-7 mt-7 inset-x-0 w-3/6 mx-auto z-10"
         onSubmit={handleFormSubmit}
       >
         <input

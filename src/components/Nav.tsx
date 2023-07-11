@@ -28,7 +28,7 @@ const Nav = () => {
           <div className="flex gap-3 md:gap-5">
             <button
               type="button"
-              onClick={() => signOut()}
+              onClick={() => signOut({ callbackUrl: "/" })}
               className=" text-[#F1FAEE] outline_btn absolute right-3"
             >
               Sign Out{" "}
