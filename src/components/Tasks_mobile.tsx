@@ -155,57 +155,74 @@ const TasksMobile = ({
               <Typography variant="h6" gutterBottom component="div">
                 Description
               </Typography>
-              <Typography variant="body1" gutterBottom component="div">
-                {description}
-              </Typography>
+              <pre>
+                <Typography variant="body1" gutterBottom component="div">
+                  {description}
+                </Typography>
+              </pre>
             </Box>{" "}
             <Box sx={{ margin: 1 }}>
               <Typography variant="button" gutterBottom component="div">
                 Details
               </Typography>
               <Typography variant="body2" gutterBottom component="div">
+                Status:{" "}
+                <span
+                  className={
+                    status == "In Progress"
+                      ? "text-orange-400"
+                      : status == "Completed"
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }
+                >
+                  {status}&nbsp;&nbsp;&nbsp;
+                </span>{" "}
+                <br />
+                Date Due: {dateDue.toLocaleDateString()} <br />
                 Date Finished:{" "}
                 {finishedDate == "In Progress" ? "N/A" : finishedDate} <br />
-                Date Due: {dateDue.toLocaleDateString()} <br />
                 Date Created: {dateCreated.toLocaleDateString()}
               </Typography>{" "}
             </Box>
             <Box sx={{ margin: 1 }}>
               <Typography variant="button">Actions</Typography>
               <br />
-              <div
-                className="flex mt-2"
-                onClick={() => {
-                  openUpdateForm(task);
-                }}
-              >
-                Update Task &nbsp;
-                <Image
-                  className="pb-0 ml-0"
-                  src="edit.svg"
-                  alt="edit svg"
-                  width={20}
-                  height={20}
-                />{" "}
-              </div>
-              <br />
-              <div
-                className="flex"
-                onClick={() => {
-                  handleRemoveClick(task.id!);
-                }}
-              >
-                Delete Task &nbsp;
-                <Image
-                  className="pb-0 ml-0"
-                  src="trash.svg"
-                  alt="trash svg"
-                  width={20}
-                  height={20}
+              <div className="flex items-center justify-between">
+                <div
+                  className="flex mt-2"
+                  onClick={() => {
+                    openUpdateForm(task);
+                  }}
+                >
+                  Update Task &nbsp;
+                  <Image
+                    className="pb-0 ml-0"
+                    src="edit.svg"
+                    alt="edit svg"
+                    width={20}
+                    height={20}
+                  />{" "}
+                </div>
+                <br />
+                <div
+                  className="flex mt-2"
                   onClick={() => {
                     handleRemoveClick(task.id!);
                   }}
-                />
+                >
+                  Delete Task &nbsp;
+                  <Image
+                    className="pb-0 ml-0"
+                    src="trash.svg"
+                    alt="trash svg"
+                    width={20}
+                    height={20}
+                    onClick={() => {
+                      handleRemoveClick(task.id!);
+                    }}
+                  />
+                </div>
               </div>
             </Box>
           </Collapse>

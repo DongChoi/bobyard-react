@@ -20,9 +20,12 @@ const Nav = () => {
   }, []);
 
   return (
-    <nav className="bg-[#E63946] flex w-full gap-4  p-3">
+    <nav className="bg-[#E63946] flex justify-between gap-4 relative p-3">
+      <Link href="/" className="" onClick={() => setToggleDropDown(false)}>
+        <b className="text-[#F1FAEE]">Productiver</b>
+      </Link>
+
       {/* Desktop navigation */}
-      <b className="text-[#F1FAEE]">Productiver</b>
       <div className="sm:flex hidden">
         {session?.user ? (
           <div className="flex gap-3 md:gap-5">
@@ -52,47 +55,59 @@ const Nav = () => {
       </div>
 
       {/* mobile navigation */}
-      <div className="sm:hidden flex-column relative">
-        {session?.user ? (
-          <div>
-            <button onClick={() => setToggleDropDown((prev) => !prev)}>
-              dropdown
+      {session?.user ? (
+        <>
+          <Image
+            className="sm:hidden"
+            src="hamburger-menu.svg"
+            alt="hamburger menu svg"
+            width={25}
+            height={25}
+            onClick={() => setToggleDropDown((prev) => !prev)}
+          />
+
+          {/* {toggleDropDown && ( */}
+          <div
+            className={`dropdown absolute overflow-hidden w-full left-0 top-0 -z-10 ${
+              toggleDropDown ? "translate-y-12" : "-translate-y-full"
+            } pt-2 pb-2 duration-300 ease-in transition-all pr-3 pl-10 text-right  bg-red-400 text-[#F1FAEE]`}
+          >
+            <div>
+              <Link
+                href="/tasks"
+                className=""
+                onClick={() => setToggleDropDown(false)}
+              >
+                My Tasks
+              </Link>
+            </div>
+            <button
+              type="button"
+              className="pt-2"
+              onClick={() => {
+                setToggleDropDown(false);
+                signOut();
+              }}
+            >
+              Sign Out
             </button>
-            {toggleDropDown && (
-              <div className="dropdown flex">
-                <Link
-                  href="/tasks"
-                  className="dropdown_link"
-                  onClick={() => setToggleDropDown(false)}
-                >
-                  My Tasks
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setToggleDropDown(false);
-                    signOut();
-                  }}
-                >
-                  Sign Out
-                </button>
-              </div>
-            )}
           </div>
-        ) : (
-          <>
-            {/* show all provider buttons */}
-            {providers &&
-              Object.values(providers).map((provider) => (
-                <button
-                  type="button"
-                  key={provider.name}
-                  onClick={() => signIn(provider.id)}
-                ></button>
-              ))}
-          </>
-        )}
-      </div>
+        </>
+      ) : (
+        <>
+          {/* show all provider buttons */}
+          {providers &&
+            Object.values(providers).map((provider) => (
+              <button
+                type="button"
+                key={provider.name}
+                onClick={() => signIn(provider.id)}
+              >
+                Sign In
+              </button>
+            ))}
+        </>
+      )}
     </nav>
   );
 };

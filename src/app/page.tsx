@@ -66,7 +66,7 @@ const Home = () => {
       session: session?.user,
       taskData: { ...taskData, userId: userId },
     });
-    console.log(resp);
+    // console.log(resp);
     const updatedTasks = [...tasks, resp.data.newTask];
     setTasks(updatedTasks);
     setToggleTaskForm(false);
@@ -88,7 +88,7 @@ const Home = () => {
       setTasks(updatedTasks);
       // console.log("UPDATED TASKS", updatedTasks);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
     setTask(null);
   }
@@ -115,7 +115,7 @@ const Home = () => {
   }
 
   return (
-    <>
+    <div className="relative -z-20">
       {toggleTaskForm && <Form cancelForm={cancelForm} addTask={addTask} />}
       {task && (
         <UpdateForm
@@ -124,6 +124,7 @@ const Home = () => {
           task={task}
         />
       )}
+
       {session?.user ? (
         <>
           {/*hidden md:block*/}
@@ -135,6 +136,7 @@ const Home = () => {
                   <TableRow>
                     <TableCell align="right"></TableCell>
                     <TableCell align="right">
+                      {/* do padding instead of &nbsp */}
                       Status&nbsp;&nbsp;&nbsp;
                     </TableCell>
                     <TableCell align="right">
@@ -244,7 +246,7 @@ const Home = () => {
           </h3>
         </section>
       )}
-    </>
+    </div>
   );
 };
 
