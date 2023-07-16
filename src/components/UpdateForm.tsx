@@ -47,9 +47,29 @@ const UpdateForm = ({
       updateTask(task.id, formData);
     }
   };
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (
+    event
+  ) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        description: prevFormData.description + "\n",
+      }));
+    }
+  };
+
+  const calculateTextAreaRows = (value: string): number => {
+    const lineHeight = 18; // Adjust this value according to your textarea's line height
+    const rows = Math.ceil(value.split("\n").length);
+    return rows < 4 ? 4 : rows;
   };
 
   const handleCalendarChange = async (event: any) => {
@@ -76,13 +96,15 @@ const UpdateForm = ({
           style={{ marginBottom: "5px" }}
         />
 
-        <input
+        <textarea
           required
+          rows={calculateTextAreaRows(formData.description)}
           className="bg-slate-100 border-solid border-2 border-slate-600 rounded"
           placeholder="description"
           name="description"
           value={formData.description}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           style={{ marginBottom: "5px" }}
         />
         <LocalizationProvider dateAdapter={AdapterDayjs}>

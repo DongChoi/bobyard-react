@@ -63,7 +63,6 @@ const TasksMobile = ({
     removeTask(taskId);
   };
 
-  console.log(title, "\n", today, "\n", dateDue, status, finishedDate);
   // console.log(task.id, "task.finishedDate", task.finished_date);
   // console.log("finishedDate", finishedDate);
 

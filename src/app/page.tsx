@@ -107,6 +107,7 @@ const Home = () => {
   /*********************************** FORMS ***********************************/
   function openUpdateForm(task: Task) {
     setTask(task);
+    console.log(task);
   }
 
   function cancelForm() {
@@ -115,7 +116,7 @@ const Home = () => {
   }
 
   return (
-    <div className="relative -z-20">
+    <div className="relative z-10">
       {toggleTaskForm && <Form cancelForm={cancelForm} addTask={addTask} />}
       {task && (
         <UpdateForm
@@ -134,7 +135,6 @@ const Home = () => {
               <Table aria-label="collapsible table">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="right"></TableCell>
                     <TableCell align="right">
                       {/* do padding instead of &nbsp */}
                       Status&nbsp;&nbsp;&nbsp;
@@ -173,14 +173,14 @@ const Home = () => {
               </Table>
             </TableContainer>
             <button
-              className="rounded p-4 bg-[#A8DADC] m-2"
+              className="rounded px-4 py-3 bg-[#A8DADC] m-2"
               //bg-blue-300
               onClick={(evt) => {
                 evt.preventDefault();
                 setToggleTaskForm(true);
               }}
             >
-              New Task
+              <span className="text-xl">+</span> New
             </button>
           </section>
 

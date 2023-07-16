@@ -68,7 +68,7 @@ const Nav = () => {
 
           {/* {toggleDropDown && ( */}
           <div
-            className={`dropdown absolute overflow-hidden w-full left-0 top-0 -z-10 ${
+            className={`dropdown absolute overflow-hidden w-full left-0 top-0 z-20 ${
               toggleDropDown ? "translate-y-12" : "-translate-y-full"
             } pt-2 pb-2 duration-300 ease-in transition-all pr-3 pl-10 text-right  bg-red-400 text-[#F1FAEE]`}
           >

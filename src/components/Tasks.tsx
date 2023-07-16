@@ -59,15 +59,22 @@ const Tasks = ({
       ? "In Progress"
       : "Completed";
 
-  const handleRemoveClick = (taskId: Number) => {
-    removeTask(taskId);
+  const handleRemoveClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+
+    removeTask(task.id);
   };
 
-  console.log(title, "\n", today, "\n", dateDue, status, finishedDate);
+  const handleUpdateClick = (event: React.MouseEvent) => {
+    openUpdateForm(task);
+    event.stopPropagation();
+  };
+
   // console.log(task.id, "task.finishedDate", task.finished_date);
   // console.log("finishedDate", finishedDate);
 
-  const handleToggleTask = () => {
+  const handleToggleTask = (event: React.MouseEvent) => {
+    event.stopPropagation();
     const stringToday = today.toLocaleDateString();
     const taskPayload: { finished: boolean; stringToday: string } = {
       finished: true,
@@ -85,17 +92,11 @@ const Tasks = ({
 
   return (
     <React.Fragment>
-      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+      <TableRow
+        sx={{ "& > *": { borderBottom: "unset" } }}
+        onClick={() => setOpen(!open)}
+      >
         {/* future implementation for getting a graph for api call */}
-        <TableCell align="center">
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
         <TableCell align="right">
           <span
             className={
@@ -131,9 +132,7 @@ const Tasks = ({
             alt="edit svg"
             width={20}
             height={20}
-            onClick={() => {
-              openUpdateForm(task);
-            }}
+            onClick={handleUpdateClick}
           />
           {/* &nbsp;&nbsp;&nbsp; */}
         </TableCell>
@@ -144,9 +143,7 @@ const Tasks = ({
             alt="trash svg"
             width={24}
             height={24}
-            onClick={() => {
-              handleRemoveClick(task.id!);
-            }}
+            onClick={handleRemoveClick}
           />
         </TableCell>
       </TableRow>
