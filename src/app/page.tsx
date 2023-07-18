@@ -15,6 +15,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import UpdateForm from "@/components/UpdateForm";
 import TasksMobile from "@/components/Tasks_mobile";
@@ -135,26 +136,22 @@ const Home = () => {
               <Table aria-label="collapsible table">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="right">
+                    <TableCell className="ml-4" align="left">
                       {/* do padding instead of &nbsp */}
-                      Status&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell align="left">
                       Date Due&nbsp;&nbsp;&nbsp;
                     </TableCell>
-                    <TableCell align="right">Title&nbsp;&nbsp;&nbsp;</TableCell>
-                    <TableCell align="right">
+                    <TableCell align="left">Title&nbsp;&nbsp;&nbsp;</TableCell>
+                    <TableCell align="left">
                       Created&nbsp;&nbsp;&nbsp;
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell align="left">
                       Complete&nbsp;&nbsp;&nbsp;
                     </TableCell>
-                    <TableCell align="right">
-                      update&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="right">
-                      delete&nbsp;&nbsp;&nbsp;
-                    </TableCell>
+                    {/* <TableCell align="left">update&nbsp;&nbsp;&nbsp;</TableCell> */}
+                    <TableCell align="left">delete&nbsp;&nbsp;&nbsp;</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -182,6 +179,7 @@ const Home = () => {
             >
               <span className="text-xl">+</span> New
             </button>
+            {/* Display task info on side */}
           </section>
 
           {/* MOBILE */}
@@ -191,7 +189,7 @@ const Home = () => {
               <Table aria-label="collapsible table">
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" align="right"></TableCell>
+                    <TableCell className="px-0" align="left"></TableCell>
                     <TableCell align="left">Complete</TableCell>
 
                     {/* <TableCell align="right">

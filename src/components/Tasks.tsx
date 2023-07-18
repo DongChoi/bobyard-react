@@ -61,13 +61,11 @@ const Tasks = ({
 
   const handleRemoveClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-
     removeTask(task.id);
   };
 
   const handleUpdateClick = (event: React.MouseEvent) => {
     openUpdateForm(task);
-    event.stopPropagation();
   };
 
   // console.log(task.id, "task.finishedDate", task.finished_date);
@@ -94,82 +92,59 @@ const Tasks = ({
     <React.Fragment>
       <TableRow
         sx={{ "& > *": { borderBottom: "unset" } }}
-        onClick={() => setOpen(!open)}
+        onClick={handleUpdateClick}
       >
         {/* future implementation for getting a graph for api call */}
-        <TableCell align="right">
+        <TableCell align="left">
           <span
-            className={
+            className={`
+            ml-4
+            ${
               status == "In Progress"
                 ? "text-orange-400"
                 : status == "Completed"
                 ? "text-green-600"
                 : "text-red-600"
-            }
+            }`}
           >
             {status}&nbsp;&nbsp;&nbsp;
           </span>
         </TableCell>
-        <TableCell align="right">
+        <TableCell align="left">
           {dateDue.toLocaleDateString()}&nbsp;&nbsp;&nbsp;
         </TableCell>
-        <TableCell align="right">{title}&nbsp;&nbsp;&nbsp;</TableCell>
-        <TableCell align="right">
+        <TableCell align="left">{title}&nbsp;&nbsp;&nbsp;</TableCell>
+        <TableCell align="left">
           {dateCreated.toLocaleDateString()}&nbsp;&nbsp;&nbsp;
         </TableCell>
 
-        <TableCell align="right">
+        <TableCell align="left">
           <Checkbox
             {...label}
             onClick={handleToggleTask}
             checked={status === "Completed" ? true : false}
           />
         </TableCell>
-        <TableCell align="right" className="">
-          <Image
-            className="mx-auto pb-0  mr-3"
+        <TableCell align="left" className="">
+          {/* <Image
+            className="pb-0  mr-3"
             src="edit.svg"
             alt="edit svg"
             width={20}
             height={20}
             onClick={handleUpdateClick}
-          />
+          /> */}
           {/* &nbsp;&nbsp;&nbsp; */}
         </TableCell>
-        <TableCell align="right">
+        <TableCell align="left">
           <Image
-            className="mx-auto pb-0 mr-3"
+            className="pb-0 mr-3"
             src="trash.svg"
             alt="trash svg"
             width={24}
             height={24}
             onClick={handleRemoveClick}
           />
-        </TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Description
-              </Typography>
-              <pre>
-                <Typography variant="body1" gutterBottom component="div">
-                  {description}
-                </Typography>
-              </pre>
-            </Box>
-            <Box sx={{ margin: 1 }}>
-              <Typography variant="button" gutterBottom component="div">
-                Details
-              </Typography>
-              <Typography variant="body2" gutterBottom component="div">
-                Created at: {dateCreated.toLocaleDateString()}, Finished Date:{" "}
-                {finishedDate}
-              </Typography>
-            </Box>
-          </Collapse>
         </TableCell>
       </TableRow>
     </React.Fragment>

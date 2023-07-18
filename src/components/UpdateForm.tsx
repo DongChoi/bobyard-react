@@ -81,42 +81,73 @@ const UpdateForm = ({
     cancelForm();
   };
   return (
-    <div>
-      <form
-        className="flex flex-col rounded shadow-2xl pb-14 border-solid border-2 bg-slate-100 border-slate-600 fixed my-auto p-7 mt-7 inset-x-0 w-3/6 mx-auto z-10"
-        onSubmit={handleFormSubmit}
-      >
-        <input
-          required
-          className="bg-slate-100 border-solid border-2 border-slate-600 rounded"
-          placeholder="Title"
-          name="title"
-          value={formData.title}
-          onChange={handleInputChange}
-          style={{ marginBottom: "5px" }}
-        />
-
-        <textarea
-          required
-          rows={calculateTextAreaRows(formData.description)}
-          className="bg-slate-100 border-solid border-2 border-slate-600 rounded"
-          placeholder="description"
-          name="description"
-          value={formData.description}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          style={{ marginBottom: "5px" }}
-        />
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={["DatePicker"]}>
-            <DatePicker
-              value={dayjs(formData.due_date)}
-              onChange={handleCalendarChange}
-              minDate={dayjs().subtract(0, "day")}
-            />
-          </DemoContainer>
-        </LocalizationProvider>
-        {/* {calendarError && (
+    <div className="fixed h-screen inset-0 w-screen">
+      {/* <div className={`fixed ${task ? "block" : "hidden"}`}>
+              <div className="h-full w-full inset-0 bg-purple-500 opacity-75 right-0 top-0"></div>
+              <div className="absolute inset-0 right-0">
+                <div className="">
+                  <Typography variant="h6" gutterBottom component="div">
+                    Description
+                  </Typography>
+                  <pre>
+                    <Typography variant="body1" gutterBottom component="div">
+                      {task.description}
+                    </Typography>
+                  </pre>
+                </div>
+                <div>
+                  <Typography variant="button" gutterBottom component="div">
+                    Details
+                  </Typography>
+                  <Typography variant="body2" gutterBottom component="div">
+                    Created at: {dateCreated.toLocaleDateString()}, Finished
+                    Date: {finishedDate}
+                  </Typography>
+                </div>
+              </div>
+            </div> */}
+      <div
+        onClick={handleCancelButtonClick}
+        className="h-full w-full inset-0 bg-purple-500 opacity-75 right-0 top-0 z-50"
+      ></div>
+      <div className="absolute ease-in-out duration-300 transition-all translate-x-0 h-full right-0 top-0 w-2/5 z-20">
+        <form
+          className="h-full flex flex-col shadow-2xl pb-14 border-solid border-2 bg-slate-100 border-slate-200 p-7 z-10"
+          onSubmit={handleFormSubmit}
+        >
+          <label className="text-gray-600 p-2">Title</label>
+          <input
+            required
+            className="bg-slate-100 border-solid border-2 border-slate-200 p-2 rounded"
+            placeholder="Title"
+            name="title"
+            value={formData.title}
+            onChange={handleInputChange}
+            style={{ marginBottom: "5px" }}
+          />
+          <label className="text-gray-600 p-2">Description</label>
+          <textarea
+            required
+            rows={calculateTextAreaRows(formData.description)}
+            className="bg-slate-100 border-solid border-2 border-slate-200 p-2 rounded"
+            placeholder="description"
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            style={{ marginBottom: "5px" }}
+          />
+          <label className="p-2">Due Date</label>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={["DatePicker"]}>
+              <DatePicker
+                value={dayjs(formData.due_date)}
+                onChange={handleCalendarChange}
+                minDate={dayjs().subtract(0, "day")}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+          {/* {calendarError && (
           <div
             className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
             role="alert"
@@ -138,22 +169,23 @@ const UpdateForm = ({
             </span>
           </div>
         )} */}
-        <div className="flex absolute right-0 bottom-0 m-3">
-          <button
-            className="border-solid border-1 rounded bg-sky-200 mr-3 p-2"
-            type="submit"
-            color="primary"
-          >
-            Update
-          </button>
-          <button
-            className="border-solid border-1 bg-red-200 rounded mr-3 p-2"
-            onClick={handleCancelButtonClick}
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+          <div className="flex absolute right-0 bottom-0 m-3">
+            <button
+              className="border-solid border-1 rounded bg-sky-200 mr-3 p-2"
+              type="submit"
+              color="primary"
+            >
+              Update
+            </button>
+            <button
+              className="border-solid border-1 bg-red-200 rounded mr-3 p-2"
+              onClick={handleCancelButtonClick}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
