@@ -120,7 +120,7 @@ const Tasks = ({
 
         <TableCell align="left">
           <Checkbox
-            className="z-1"
+            sx={{ zIndex: 0 }}
             {...label}
             onClick={handleToggleTask}
             checked={status === "Completed" ? true : false}
@@ -139,7 +139,7 @@ const Tasks = ({
         {/* </TableCell> */}
         <TableCell align="left">
           <Image
-            className="pb-0 mr-3"
+            className="pb-0 mr-3 cursor-pointer"
             src="trash.svg"
             alt="trash svg"
             width={24}

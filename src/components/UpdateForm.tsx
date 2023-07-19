@@ -84,7 +84,11 @@ const UpdateForm = ({
     cancelForm();
   };
   return (
-    <div className={`${noData && "invisible"} fixed h-screen inset-0 w-screen`}>
+    <div
+      className={`${
+        noData && "invisible"
+      } fixed h-screen inset-0 w-screen z-10`}
+    >
       {/* <div className={`fixed ${task ? "block" : "hidden"}`}>
               <div className="h-full w-full inset-0 bg-purple-500 opacity-75 right-0 top-0"></div>
               <div className="absolute inset-0 right-0">
@@ -111,17 +115,17 @@ const UpdateForm = ({
             </div> */}
       <div
         onClick={handleCancelButtonClick}
-        className={`h-full w-full inset-0 transition-all ease-out duration-500 bg-gray-200 
+        className={`h-full w-full inset-0 transition-all ease-out duration-[10000ms] bg-gray-200 
         ${noData ? "opacity-0" : "opacity-50"} 
         right-0 top-0 z-50`}
       ></div>
       <div
-        className={`absolute ease-out duration-500 transition-all ${
+        className={`absolute ease-out duration-[10000ms] transition-all ${
           noData ? "translate-x-full" : "translate-x-0"
         }  h-full right-0 top-0 w-2/5 z-20`}
       >
         <form
-          className="h-full flex flex-col shadow-2xl pb-14 border-solid border-2 bg-slate-100 border-slate-200 p-7 z-10"
+          className="h-full flex flex-col shadow-2xl pb-14 border-solid border-2 bg-slate-100 border-slate-200 p-7 z-10000"
           onSubmit={handleFormSubmit}
         >
           <label className="text-gray-600 p-2">Title</label>
