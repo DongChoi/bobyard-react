@@ -115,14 +115,14 @@ const UpdateForm = ({
             </div> */}
       <div
         onClick={handleCancelButtonClick}
-        className={`h-full w-full inset-0 transition-all ease-out duration-[10000ms] bg-gray-200 
+        className={`h-full w-full inset-0 transition-all ease-out duration-[1000ms] bg-gray-200 
         ${noData ? "opacity-0" : "opacity-50"} 
         right-0 top-0 z-50`}
       ></div>
       <div
-        className={`absolute ease-out duration-[10000ms] transition-all ${
+        className={`absolute ease-out duration-[1000ms] transition-all ${
           noData ? "translate-x-full" : "translate-x-0"
-        }  h-full right-0 top-0 w-2/5 z-20`}
+        }  h-full right-0 top-0 w-full sm:w-2/5 z-20`}
       >
         <form
           className="h-full flex flex-col shadow-2xl pb-14 border-solid border-2 bg-slate-100 border-slate-200 p-7 z-10000"
