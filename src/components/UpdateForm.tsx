@@ -22,17 +22,20 @@ const UpdateForm = ({
 }: {
   updateTask: Function;
   cancelForm: Function;
-  task: Task;
+  task: Task | {};
 }) => {
   const initialFormData = {
-    title: task?.title,
-    description: task?.description,
-    due_date: task?.due_date,
+    title: "Title",
+    description: "description",
+    due_date: new Date(),
   };
 
-  const [formData, setFormData] = useState(initialFormData);
-  // const [calendarError, setCalendarError] = useState<boolean>(false);
+  const [formData, setFormData] = useState(
+    (Object.keys(task).length === 0 ? initialFormData : task) as Task
+  );
 
+  // const [calendarError, setCalendarError] = useState<boolean>(false);
+  const noData = Object.keys(task).length === 0;
   const today = new Date();
   const handleFormSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -44,7 +47,7 @@ const UpdateForm = ({
     //   validation = false;
     // }
     if (validation == true) {
-      updateTask(task.id, formData);
+      updateTask(formData);
     }
   };
   const handleInputChange = (
@@ -59,7 +62,7 @@ const UpdateForm = ({
   ) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      setFormData((prevFormData) => ({
+      setFormData((prevFormData: Task) => ({
         ...prevFormData,
         description: prevFormData.description + "\n",
       }));
@@ -81,7 +84,7 @@ const UpdateForm = ({
     cancelForm();
   };
   return (
-    <div className="fixed h-screen inset-0 w-screen">
+    <div className={`${noData && "invisible"} fixed h-screen inset-0 w-screen`}>
       {/* <div className={`fixed ${task ? "block" : "hidden"}`}>
               <div className="h-full w-full inset-0 bg-purple-500 opacity-75 right-0 top-0"></div>
               <div className="absolute inset-0 right-0">
@@ -108,9 +111,15 @@ const UpdateForm = ({
             </div> */}
       <div
         onClick={handleCancelButtonClick}
-        className="h-full w-full inset-0 bg-purple-500 opacity-75 right-0 top-0 z-50"
+        className={`h-full w-full inset-0 transition-all ease-out duration-500 bg-gray-200 
+        ${noData ? "opacity-0" : "opacity-50"} 
+        right-0 top-0 z-50`}
       ></div>
-      <div className="absolute ease-in-out duration-300 transition-all translate-x-0 h-full right-0 top-0 w-2/5 z-20">
+      <div
+        className={`absolute ease-out duration-500 transition-all ${
+          noData ? "translate-x-full" : "translate-x-0"
+        }  h-full right-0 top-0 w-2/5 z-20`}
+      >
         <form
           className="h-full flex flex-col shadow-2xl pb-14 border-solid border-2 bg-slate-100 border-slate-200 p-7 z-10"
           onSubmit={handleFormSubmit}

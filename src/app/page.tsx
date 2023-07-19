@@ -45,7 +45,7 @@ const Home = () => {
   const [userId, setUserId] = useState<number | null>(null);
   const [filter, setFilter] = useState("all");
   const [toggleTaskForm, setToggleTaskForm] = useState<boolean>(false);
-  const [task, setTask] = useState<Task | null>(null);
+  const [task, setTask] = useState<Task | {}>({});
   useEffect(() => {
     async function fetchUser() {
       if (session?.user) {
@@ -73,15 +73,15 @@ const Home = () => {
     setToggleTaskForm(false);
   }
 
-  async function updateTask(taskId: Number, taskPayload: Task) {
+  async function updateTask(taskPayload: Task) {
     try {
       // console.log(taskId);
-      const resp = await axios.patch(`api/tasks/${taskId}`, {
+      const resp = await axios.patch(`api/tasks/${taskPayload.id}`, {
         taskPayload,
       });
       // console.log("response", resp);
       const updatedTasks = tasks.map((item) => {
-        if (item.id === taskId) {
+        if (item.id === taskPayload.id) {
           return resp.data.updatedTask;
         }
         return item;
@@ -91,7 +91,7 @@ const Home = () => {
     } catch (e) {
       console.error(e);
     }
-    setTask(null);
+    setTask([]);
   }
 
   async function removeTask(taskId: Number) {
@@ -113,19 +113,14 @@ const Home = () => {
 
   function cancelForm() {
     setToggleTaskForm(false);
-    setTask(null);
+    setTask([]);
   }
 
   return (
     <div className="relative z-10">
       {toggleTaskForm && <Form cancelForm={cancelForm} addTask={addTask} />}
-      {task && (
-        <UpdateForm
-          cancelForm={cancelForm}
-          updateTask={updateTask}
-          task={task}
-        />
-      )}
+
+      <UpdateForm cancelForm={cancelForm} updateTask={updateTask} task={task} />
 
       {session?.user ? (
         <>

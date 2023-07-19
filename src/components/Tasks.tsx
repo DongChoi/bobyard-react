@@ -120,22 +120,23 @@ const Tasks = ({
 
         <TableCell align="left">
           <Checkbox
+            className="z-1"
             {...label}
             onClick={handleToggleTask}
             checked={status === "Completed" ? true : false}
           />
         </TableCell>
-        <TableCell align="left" className="">
-          {/* <Image
+        {/* <TableCell align="left" className=""> */}
+        {/* <Image
             className="pb-0  mr-3"
-            src="edit.svg"
+            src="edi.svg"
             alt="edit svg"
             width={20}
             height={20}
             onClick={handleUpdateClick}
           /> */}
-          {/* &nbsp;&nbsp;&nbsp; */}
-        </TableCell>
+        {/* &nbsp;&nbsp;&nbsp; */}
+        {/* </TableCell> */}
         <TableCell align="left">
           <Image
             className="pb-0 mr-3"
