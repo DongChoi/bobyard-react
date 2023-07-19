@@ -26,7 +26,7 @@ const Nav = () => {
       </Link>
 
       {/* Desktop navigation */}
-      <div className="sm:flex hidden">
+      <div className="hidden sm:block">
         {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <button
@@ -53,61 +53,62 @@ const Nav = () => {
           </>
         )}
       </div>
-
       {/* mobile navigation */}
-      {session?.user ? (
-        <>
-          <Image
-            className="sm:hidden"
-            src="hamburger-menu.svg"
-            alt="hamburger menu svg"
-            width={25}
-            height={25}
-            onClick={() => setToggleDropDown((prev) => !prev)}
-          />
+      <div className="sm:hidden">
+        {session?.user ? (
+          <>
+            <Image
+              className="sm:hidden"
+              src="hamburger-menu.svg"
+              alt="hamburger menu svg"
+              width={25}
+              height={25}
+              onClick={() => setToggleDropDown((prev) => !prev)}
+            />
 
-          {/* {toggleDropDown && ( */}
-          <div
-            className={`dropdown absolute overflow-hidden w-full left-0 top-0 z-20 ${
-              toggleDropDown ? "translate-y-12" : "-translate-y-full"
-            } pt-2 pb-2 duration-300 ease-in transition-all pr-3 pl-10 text-right  bg-red-400 text-[#F1FAEE]`}
-          >
-            <div>
-              <Link
-                href="/tasks"
-                className=""
-                onClick={() => setToggleDropDown(false)}
-              >
-                My Tasks
-              </Link>
-            </div>
-            <button
-              type="button"
-              className="pt-2"
-              onClick={() => {
-                setToggleDropDown(false);
-                signOut();
-              }}
+            {/* {toggleDropDown && ( */}
+            <div
+              className={`dropdown absolute overflow-hidden w-full left-0 top-0 z-20 ${
+                toggleDropDown ? "translate-y-12" : "-translate-y-full"
+              } pt-2 pb-2 duration-300 ease-in transition-all pr-3 pl-10 text-right  bg-red-400 text-[#F1FAEE]`}
             >
-              Sign Out
-            </button>
-          </div>
-        </>
-      ) : (
-        <>
-          {/* show all provider buttons */}
-          {providers &&
-            Object.values(providers).map((provider) => (
+              <div>
+                <Link
+                  href="/tasks"
+                  className=""
+                  onClick={() => setToggleDropDown(false)}
+                >
+                  My Tasks
+                </Link>
+              </div>
               <button
                 type="button"
-                key={provider.name}
-                onClick={() => signIn(provider.id)}
+                className="pt-2"
+                onClick={() => {
+                  setToggleDropDown(false);
+                  signOut();
+                }}
               >
-                Sign In
+                Sign Out
               </button>
-            ))}
-        </>
-      )}
+            </div>
+          </>
+        ) : (
+          <>
+            {/* show all provider buttons */}
+            {providers &&
+              Object.values(providers).map((provider) => (
+                <button
+                  type="button"
+                  key={provider.name}
+                  onClick={() => signIn(provider.id)}
+                >
+                  Sign In
+                </button>
+              ))}
+          </>
+        )}
+      </div>
     </nav>
   );
 };

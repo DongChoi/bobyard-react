@@ -17,7 +17,7 @@ import UpdateIcon from "@mui/icons-material/Update";
 import { UpdateDisabled } from "@mui/icons-material";
 import Image from "next/image";
 interface Task {
-  id?: number;
+  id: number;
   title: String;
   description: String;
   userId?: number;
@@ -74,7 +74,12 @@ const Tasks = ({
   const handleToggleTask = (event: React.MouseEvent) => {
     event.stopPropagation();
     const stringToday = today.toLocaleDateString();
-    const taskPayload: { finished: boolean; stringToday: string } = {
+    const taskPayload: {
+      id: number;
+      finished: boolean;
+      stringToday: string;
+    } = {
+      id: task.id,
       finished: true,
       stringToday,
     };
@@ -83,7 +88,7 @@ const Tasks = ({
     } else {
       taskPayload.finished = false;
     }
-    updateTask(task.id, taskPayload);
+    updateTask(taskPayload);
   };
 
   function filterTasks() {}

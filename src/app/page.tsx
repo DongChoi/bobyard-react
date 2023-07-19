@@ -75,6 +75,7 @@ const Home = () => {
 
   async function updateTask(taskPayload: Task) {
     try {
+      console.log(taskPayload);
       // console.log(taskId);
       const resp = await axios.patch(`api/tasks/${taskPayload.id}`, {
         taskPayload,
@@ -231,10 +232,16 @@ const Home = () => {
         </>
       ) : (
         <section className="w-full flex-center">
-          <h1 className="flex justify-center items-center pt-5  bg-gradient-to-r from-red-500 to-yellow-500 text-transparent bg-clip-text">
+          <h1 className="hidden sm:flex text-center justify-center items-center pt-5  bg-gradient-to-r from-red-500 to-yellow-500 text-transparent bg-clip-text">
             You have reached Productiver
           </h1>
-          <h3 className="flex justify-center pt-5">
+          <h3 className="hidden sm:flex text-center justify-center pt-5">
+            App dedicated to increase productivity.
+          </h3>
+          <h1 className="sm:hidden flex justify-center items-center pt-5  bg-gradient-to-r from-red-500 to-yellow-500 text-transparent bg-clip-text">
+            Productiver
+          </h1>
+          <h3 className="sm:hidden text-center flex justify-center pt-5">
             App dedicated to increase productivity.
           </h3>
         </section>

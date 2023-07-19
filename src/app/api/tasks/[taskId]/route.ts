@@ -67,7 +67,7 @@ export async function PATCH(
 ) {
   const token = await getToken({ req, secret: process.env.NEXT_AUTHSECRET });
   console.log("Attempting to update task");
-
+  console.log(params.taskId);
   const taskId = Number(params.taskId);
   const data = await req.json();
   const taskPayload = data.taskPayload;
