@@ -17,14 +17,14 @@ import UpdateIcon from "@mui/icons-material/Update";
 import { UpdateDisabled } from "@mui/icons-material";
 import Image from "next/image";
 interface Task {
-  id?: number;
-  title: String;
-  description: String;
-  userId?: number;
-  created_at: Date;
-  due_date: Date;
-  updatedAt?: Date;
-  finished_date?: Date;
+  id: number;
+  title: string;
+  description: string;
+  userId: number;
+  created_at: string;
+  due_date: Date | string;
+  updatedAt: Date;
+  finished_date?: string;
 }
 
 const TasksMobile = ({

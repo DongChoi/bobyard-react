@@ -1,32 +1,18 @@
 "use client";
-import {
-  Box,
-  Checkbox,
-  Collapse,
-  IconButton,
-  Table,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { Checkbox, TableCell, TableRow } from "@mui/material";
+import ConfettiExplosion from "react-confetti-explosion";
 import React, { useState } from "react";
-import UpdateIcon from "@mui/icons-material/Update";
-import { UpdateDisabled } from "@mui/icons-material";
 import Image from "next/image";
 interface Task {
   id: number;
-  title: String;
-  description: String;
-  userId?: number;
-  created_at: Date;
-  due_date: Date;
-  updatedAt?: Date;
-  finished_date?: Date;
+  title: string;
+  description: string;
+  userId: number;
+  created_at: string;
+  due_date: Date | string;
+  updatedAt: Date;
+  finished_date?: string;
 }
-
 const Tasks = ({
   removeTask,
   filter,
@@ -42,6 +28,7 @@ const Tasks = ({
 }) => {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const [open, setOpen] = useState(false);
+  const [isExploding, setIsExploding] = useState(false);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const title = task.title;
@@ -85,10 +72,16 @@ const Tasks = ({
     };
     if (finishedDate === "In Progress" || finishedDate === "Past Due") {
       taskPayload.finished = true;
+      setIsExploding(true);
     } else {
       taskPayload.finished = false;
     }
     updateTask(taskPayload);
+    setTimeout(setIsExplodingToFalse, 7000);
+  };
+
+  const setIsExplodingToFalse = () => {
+    setIsExploding(false);
   };
 
   function filterTasks() {}
@@ -106,10 +99,10 @@ const Tasks = ({
             ml-4
             ${
               status == "In Progress"
-                ? "text-orange-400"
+                ? "text-orange-300"
                 : status == "Completed"
                 ? "text-green-600"
-                : "text-red-600"
+                : "text-amber-600"
             }`}
           >
             {status}&nbsp;&nbsp;&nbsp;
@@ -124,6 +117,8 @@ const Tasks = ({
         </TableCell>
 
         <TableCell align="left">
+          {isExploding && <ConfettiExplosion zIndex={11} />}
+
           <Checkbox
             sx={{ zIndex: 0 }}
             {...label}

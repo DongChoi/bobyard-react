@@ -3,16 +3,17 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import React, { useState } from "react";
+import React, { MouseEventHandler, useState } from "react";
+import { Typography } from "@mui/material";
 interface Task {
-  id?: number;
+  id: number;
   title: string;
   description: string;
-  userId?: number;
-  created_at?: Date;
+  userId: number;
+  created_at: string;
   due_date: Date | string;
-  updatedAt?: Date;
-  finished_date?: Date;
+  updatedAt: Date;
+  finished_date?: string;
 }
 
 const UpdateForm = ({
@@ -22,22 +23,21 @@ const UpdateForm = ({
 }: {
   updateTask: Function;
   cancelForm: Function;
-  task: Task | {};
+  task: Task;
 }) => {
-  const initialFormData = {
-    title: "Title",
-    description: "description",
-    due_date: new Date(),
-  };
+  // const initialFormData = {
+  //   title: "Title",
+  //   description: "description",
+  //   due_date: new Date(),
+  // };
 
-  const [formData, setFormData] = useState(
-    (Object.keys(task).length === 0 ? initialFormData : task) as Task
-  );
-
+  // const noData = Object.keys(task).length === 0;
+  const [formData, setFormData] = useState(task);
   // const [calendarError, setCalendarError] = useState<boolean>(false);
-  const noData = Object.keys(task).length === 0;
   const today = new Date();
-  const handleFormSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (
+    evt: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>
+  ) => {
     evt.preventDefault();
     let validation = true;
     // // validation for mui/datepicker
@@ -74,7 +74,7 @@ const UpdateForm = ({
     const rows = Math.ceil(value.split("\n").length);
     return rows < 4 ? 4 : rows;
   };
-
+  console.log(task);
   const handleCalendarChange = async (event: any) => {
     const dateString = event.$d.toLocaleString().split(",")[0];
 
@@ -84,83 +84,44 @@ const UpdateForm = ({
     cancelForm();
   };
   return (
-    <div
-      className={`${
-        noData && "invisible"
-      } fixed h-screen inset-0 w-screen z-10`}
-    >
-      {/* <div className={`fixed ${task ? "block" : "hidden"}`}>
-              <div className="h-full w-full inset-0 bg-purple-500 opacity-75 right-0 top-0"></div>
-              <div className="absolute inset-0 right-0">
-                <div className="">
-                  <Typography variant="h6" gutterBottom component="div">
-                    Description
-                  </Typography>
-                  <pre>
-                    <Typography variant="body1" gutterBottom component="div">
-                      {task.description}
-                    </Typography>
-                  </pre>
-                </div>
-                <div>
-                  <Typography variant="button" gutterBottom component="div">
-                    Details
-                  </Typography>
-                  <Typography variant="body2" gutterBottom component="div">
-                    Created at: {dateCreated.toLocaleDateString()}, Finished
-                    Date: {finishedDate}
-                  </Typography>
-                </div>
-              </div>
-            </div> */}
-      <div
-        onClick={handleCancelButtonClick}
-        className={`h-full w-full inset-0 transition-all ease-out duration-[1000ms] bg-gray-200 
-        ${noData ? "opacity-0" : "opacity-50"} 
-        right-0 top-0 z-50`}
-      ></div>
-      <div
-        className={`absolute ease-out duration-[1000ms] transition-all ${
-          noData ? "translate-x-full" : "translate-x-0"
-        }  h-full right-0 top-0 w-full sm:w-2/5 z-20`}
+    <div className="h-full">
+      <form
+        className="h-full flex flex-col shadow-2xl pb-14 border-solid border-2 bg-slate-100 border-slate-200 p-7"
+        onSubmit={handleFormSubmit}
       >
-        <form
-          className="h-full flex flex-col shadow-2xl pb-14 border-solid border-2 bg-slate-100 border-slate-200 p-7 z-10000"
-          onSubmit={handleFormSubmit}
-        >
-          <label className="text-gray-600 p-2">Title</label>
-          <input
-            required
-            className="bg-slate-100 border-solid border-2 border-slate-200 p-2 rounded"
-            placeholder="Title"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            style={{ marginBottom: "5px" }}
-          />
-          <label className="text-gray-600 p-2">Description</label>
-          <textarea
-            required
-            rows={calculateTextAreaRows(formData.description)}
-            className="bg-slate-100 border-solid border-2 border-slate-200 p-2 rounded"
-            placeholder="description"
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            style={{ marginBottom: "5px" }}
-          />
-          <label className="p-2">Due Date</label>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                value={dayjs(formData.due_date)}
-                onChange={handleCalendarChange}
-                minDate={dayjs().subtract(0, "day")}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-          {/* {calendarError && (
+        <label className="text-gray-600 p-2">Title</label>
+        <input
+          required
+          className="bg-slate-100 border-solid border-2 border-slate-200 p-2 rounded"
+          placeholder="Title"
+          name="title"
+          value={formData.title}
+          onChange={handleInputChange}
+          style={{ marginBottom: "5px" }}
+        />
+        <label className="text-gray-600 p-2">Description</label>
+        <textarea
+          required
+          rows={calculateTextAreaRows(formData.description)}
+          className="bg-slate-100 border-solid border-2 border-slate-200 p-2 rounded"
+          placeholder="description"
+          name="description"
+          value={formData.description}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          style={{ marginBottom: "5px" }}
+        />
+        <label className="p-2">Due Date</label>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DemoContainer components={["DatePicker"]}>
+            <DatePicker
+              value={dayjs(formData.due_date)}
+              onChange={handleCalendarChange}
+              minDate={dayjs().subtract(0, "day")}
+            />
+          </DemoContainer>
+        </LocalizationProvider>
+        {/* {calendarError && (
           <div
             className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
             role="alert"
@@ -182,24 +143,37 @@ const UpdateForm = ({
             </span>
           </div>
         )} */}
-          <div className="flex absolute right-0 bottom-0 m-3">
-            <button
-              className="border-solid border-1 rounded bg-sky-200 mr-3 p-2"
-              type="submit"
-              color="primary"
-            >
-              Update
-            </button>
-            <button
-              className="border-solid border-1 bg-red-200 rounded mr-3 p-2"
-              onClick={handleCancelButtonClick}
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+        <div className="p-2 relative flex-col">
+          Additional Details
+          <br />
+          <br />
+          <p>Created on: {new Date(task.created_at).toLocaleDateString()},</p>
+          <p>
+            Finished Date:{" "}
+            {task.finished_date
+              ? new Date(task.finished_date).toLocaleDateString()
+              : "In progress"}
+          </p>
+        </div>
+      </form>
+      <div className="flex absolute right-0 bottom-0 m-3">
+        <button
+          className="border-solid border-1 rounded bg-sky-200 mr-3 p-2"
+          type="submit"
+          color="primary"
+          onClick={handleFormSubmit}
+        >
+          Update
+        </button>
+        <button
+          className="border-solid border-1 bg-red-200 rounded mr-3 p-2"
+          onClick={handleCancelButtonClick}
+        >
+          Cancel
+        </button>
       </div>
     </div>
+    // </div>
   );
 };
 

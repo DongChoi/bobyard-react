@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import UpdateForm from "@/components/UpdateForm";
 import TasksMobile from "@/components/Tasks_mobile";
+import CompletionMessage from "@/components/CompletionMessage";
 //this is basically  app.tsx
 
 interface User {
@@ -33,10 +34,10 @@ interface Task {
   title: string;
   description: string;
   userId: number;
-  created_at: Date;
-  due_date: Date;
+  created_at: string;
+  due_date: Date | string;
   updatedAt: Date;
-  finished_date?: Date;
+  finished_date?: string;
 }
 
 const Home = () => {
@@ -45,7 +46,7 @@ const Home = () => {
   const [userId, setUserId] = useState<number | null>(null);
   const [filter, setFilter] = useState("all");
   const [toggleTaskForm, setToggleTaskForm] = useState<boolean>(false);
-  const [task, setTask] = useState<Task | {}>({});
+  const [task, setTask] = useState<Task | null>(null);
   useEffect(() => {
     async function fetchUser() {
       if (session?.user) {
@@ -92,7 +93,7 @@ const Home = () => {
     } catch (e) {
       console.error(e);
     }
-    setTask([]);
+    setTask(null);
   }
 
   async function removeTask(taskId: Number) {
@@ -114,14 +115,37 @@ const Home = () => {
 
   function cancelForm() {
     setToggleTaskForm(false);
-    setTask([]);
+    setTask(null);
   }
 
   return (
     <div className="relative z-10">
       {toggleTaskForm && <Form cancelForm={cancelForm} addTask={addTask} />}
-
-      <UpdateForm cancelForm={cancelForm} updateTask={updateTask} task={task} />
+      <div
+        className={`${
+          !task && "invisible"
+        } fixed h-screen inset-0 w-screen z-10`}
+      >
+        <div
+          onClick={cancelForm}
+          className={`h-full w-full inset-0 transition-all ease-out duration-[1000ms] bg-gray-200 
+        ${!task ? "opacity-0" : "opacity-50"} 
+        right-0 top-0 z-50`}
+        ></div>
+        <div
+          className={`absolute ease-out duration-[1000ms] transition-all ${
+            !task ? "translate-x-full" : "translate-x-0"
+          }  h-full right-0 top-0 w-full sm:w-2/5 z-20`}
+        >
+          {task && (
+            <UpdateForm
+              cancelForm={cancelForm}
+              updateTask={updateTask}
+              task={task}
+            />
+          )}
+        </div>
+      </div>
 
       {session?.user ? (
         <>
@@ -229,6 +253,7 @@ const Home = () => {
               New Task
             </button>
           </section>
+          <CompletionMessage />
         </>
       ) : (
         <section className="w-full flex-center">
