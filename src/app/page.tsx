@@ -232,7 +232,7 @@ const Home = () => {
         <>
           {/*hidden md:block*/}
           <section className="hidden md:block mt-4 mr-6 ml-2 flex-col">
-            <b className="mr-3 ml-2">{session.user.name}'s Tasks</b>{" "}
+            <b className="mr-3 ml-2">{session.user.name}&apos;s Tasks</b>{" "}
             <button
               className="rounded px-4 py-3 bg-[#A8DADC] m-2"
               //bg-blue-300
