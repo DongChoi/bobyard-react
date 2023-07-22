@@ -29,6 +29,13 @@ interface User {
   tasks: Task[];
 }
 
+interface SortedTasks {
+  pastDue: Task[];
+  dueToday: Task[];
+  completed: Task[];
+  dueInTheFuture: Task[];
+}
+
 interface Task {
   id: number;
   title: string;
@@ -38,21 +45,28 @@ interface Task {
   due_date: Date | string;
   updatedAt: Date;
   finished_date?: string;
+  status?: string;
 }
 
 const Home = () => {
   const { data: session } = useSession();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<SortedTasks>({});
+  const [tasksDueToday, setTasksDueToday] = useState<Task[]>([]);
+  const [tasksDueInTheFuture, setTasksDueInTheFuture] = useState<Task[]>([]);
+  const [tasksPastDue, setTasksPastDue] = useState<Task[]>([]);
+  const [tasksCompleted, setTasksCompleted] = useState<Task[]>([]);
   const [userId, setUserId] = useState<number | null>(null);
   const [filter, setFilter] = useState("all");
   const [toggleTaskForm, setToggleTaskForm] = useState<boolean>(false);
   const [task, setTask] = useState<Task | null>(null);
+
+  /********************************** On Mount **********************************/
   useEffect(() => {
     async function fetchUser() {
       if (session?.user) {
         const resp = await axios.post("/api/user/", { session: session.user });
-
-        setTasks(resp.data.user.tasks);
+        const sortedTasks = sortTasks(resp.data.user.tasks);
+        setTasks(sortedTasks);
 
         setUserId(resp.data.user.id);
       }
@@ -60,7 +74,45 @@ const Home = () => {
     fetchUser();
   }, [session]);
   //View all tasks, and sort by title, status, and due date
+  console.log(tasks);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const sortTasks = (tasks: Task[]) => {
+    const sortedTasks: SortedTasks = {
+      pastDue: [],
+      dueToday: [],
+      completed: [],
+      dueInTheFuture: [],
+    };
+    tasks.forEach((task) => {
+      const status = determineStatus(task);
+      task.status = status;
+      sortedTasks[status].push(task);
+    });
+    return sortedTasks;
+  };
 
+  const determineStatus = (task: Task) => {
+    const dateDue = new Date(task.due_date);
+    dateDue.setHours(0, 0, 0, 0);
+    if (task.finished_date) {
+      return "completed";
+    } else if (dateDue.getTime() < today.getTime()) {
+      console.log(
+        "gettingtime",
+        dateDue,
+        dateDue.getTime(),
+        today,
+        today.getTime(),
+        task
+      );
+      return "pastDue";
+    } else if (dateDue.getTime() == today.getTime()) {
+      return "dueToday";
+    } else {
+      return "dueInTheFuture";
+    }
+  };
   /************************* TASK PUT PATCH DELETE POST *************************/
 
   async function addTask(taskData: Task) {
@@ -69,26 +121,51 @@ const Home = () => {
       taskData: { ...taskData, userId: userId },
     });
     // console.log(resp);
-    const updatedTasks = [...tasks, resp.data.newTask];
+    const status = determineStatus(resp.data.newTask);
+    const newStatusArray = [...tasks[status], resp.data.newTask];
+    const updatedTasks = { ...tasks, [status]: newStatusArray };
+    console.log(updatedTasks);
     setTasks(updatedTasks);
     setToggleTaskForm(false);
   }
 
   async function updateTask(taskPayload: Task) {
     try {
-      console.log(taskPayload);
-      // console.log(taskId);
+      const prevStatus = taskPayload.status as keyof SortedTasks;
+
       const resp = await axios.patch(`api/tasks/${taskPayload.id}`, {
         taskPayload,
       });
-      // console.log("response", resp);
-      const updatedTasks = tasks.map((item) => {
-        if (item.id === taskPayload.id) {
-          return resp.data.updatedTask;
-        }
-        return item;
-      });
-      setTasks(updatedTasks);
+
+      const updatedPrevStatusTasks = tasks[prevStatus].filter(
+        (item) => item.id !== taskPayload.id
+      );
+      const newStatus = determineStatus(resp.data.updatedTask);
+
+      if (prevStatus === newStatus) {
+        const newStatusObject = tasks[newStatus].map((item) => {
+          if (item.id === taskPayload.id) {
+            return resp.data.updatedTask;
+          }
+          return item;
+        });
+        const updatedTasks = {
+          ...tasks,
+          [newStatus]: newStatusObject,
+        };
+        setTasks(updatedTasks);
+      } else {
+        const updatedNewStatusTasks = [
+          ...tasks[newStatus],
+          resp.data.updatedTask,
+        ];
+        const updatedTasks = {
+          ...tasks,
+          [prevStatus]: updatedPrevStatusTasks,
+          [newStatus]: updatedNewStatusTasks,
+        };
+        setTasks(updatedTasks);
+      }
       // console.log("UPDATED TASKS", updatedTasks);
     } catch (e) {
       console.error(e);
@@ -96,13 +173,16 @@ const Home = () => {
     setTask(null);
   }
 
-  async function removeTask(taskId: Number) {
+  async function removeTask(taskId: Number, status: keyof SortedTasks) {
     try {
       const resp = await axios.delete(`api/tasks/${taskId}`);
     } catch (e) {
       console.log(e);
     }
-    const updatedTasks = tasks.filter((task) => task.id !== taskId);
+    const updatedStatusTasks = tasks[status].filter(
+      (task) => task.id !== taskId
+    );
+    const updatedTasks = { ...tasks, [status]: updatedStatusTasks };
     setTasks(updatedTasks);
     //add animation to show that deletion was successful!
   }
@@ -151,7 +231,20 @@ const Home = () => {
         <>
           {/*hidden md:block*/}
           <section className="hidden md:block mt-4 mr-6 ml-2 flex-col">
-            <b className="mr-3 ml-2">{session.user.name}&apos;s Tasks</b>
+            <b className="mr-3 ml-2">{session.user.name}'s Tasks</b>{" "}
+            <button
+              className="rounded px-4 py-3 bg-[#A8DADC] m-2"
+              //bg-blue-300
+              onClick={(evt) => {
+                evt.preventDefault();
+                setToggleTaskForm(true);
+              }}
+            >
+              <span className="text-xl">+</span> New
+            </button>
+            <br />
+            <br />
+            <b className="mr-3 ml-2">Due Today</b>
             <TableContainer className="m-2 mt-4" component={Paper}>
               <Table aria-label="collapsible table">
                 <TableHead>
@@ -176,7 +269,8 @@ const Home = () => {
                 </TableHead>
                 <TableBody>
                   {tasks &&
-                    tasks.map((task, idx) => (
+                    tasks.dueToday &&
+                    tasks.dueToday.map((task, idx) => (
                       <Tasks
                         removeTask={removeTask}
                         key={task.id}
@@ -189,16 +283,129 @@ const Home = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <button
-              className="rounded px-4 py-3 bg-[#A8DADC] m-2"
-              //bg-blue-300
-              onClick={(evt) => {
-                evt.preventDefault();
-                setToggleTaskForm(true);
-              }}
-            >
-              <span className="text-xl">+</span> New
-            </button>
+            <br />
+            <br />
+            <b className="mr-3 ml-2">Completed</b>
+            <TableContainer className="m-2 mt-4" component={Paper}>
+              <Table aria-label="collapsible table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell className="ml-4" align="left">
+                      {/* do padding instead of &nbsp */}
+                      &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="left">
+                      Date Due&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="left">Title&nbsp;&nbsp;&nbsp;</TableCell>
+                    <TableCell align="left">
+                      Created&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="left">
+                      Complete&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    {/* <TableCell align="left">update&nbsp;&nbsp;&nbsp;</TableCell> */}
+                    <TableCell align="left">delete&nbsp;&nbsp;&nbsp;</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {tasks &&
+                    tasks.completed &&
+                    tasks.completed.map((task, idx) => (
+                      <Tasks
+                        removeTask={removeTask}
+                        key={task.id}
+                        task={task}
+                        openUpdateForm={openUpdateForm}
+                        filter={filter}
+                        updateTask={updateTask}
+                      />
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <br />
+            <br />
+            <b className="mr-3 ml-2">Due In The Future</b>
+            <TableContainer className="m-2 mt-4" component={Paper}>
+              <Table aria-label="collapsible table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell className="ml-4" align="left">
+                      {/* do padding instead of &nbsp */}
+                      &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="left">
+                      Date Due&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="left">Title&nbsp;&nbsp;&nbsp;</TableCell>
+                    <TableCell align="left">
+                      Created&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="left">
+                      Complete&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    {/* <TableCell align="left">update&nbsp;&nbsp;&nbsp;</TableCell> */}
+                    <TableCell align="left">delete&nbsp;&nbsp;&nbsp;</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {tasks &&
+                    tasks.dueInTheFuture &&
+                    tasks.dueInTheFuture.map((task, idx) => (
+                      <Tasks
+                        removeTask={removeTask}
+                        key={task.id}
+                        task={task}
+                        openUpdateForm={openUpdateForm}
+                        filter={filter}
+                        updateTask={updateTask}
+                      />
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <br />
+            <br />
+            <b className="mr-3 ml-2">Past Due</b>
+            <TableContainer className="m-2 mt-4" component={Paper}>
+              <Table aria-label="collapsible table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell className="ml-4" align="left">
+                      {/* do padding instead of &nbsp */}
+                      &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="left">
+                      Date Due&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="left">Title&nbsp;&nbsp;&nbsp;</TableCell>
+                    <TableCell align="left">
+                      Created&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    <TableCell align="left">
+                      Complete&nbsp;&nbsp;&nbsp;
+                    </TableCell>
+                    {/* <TableCell align="left">update&nbsp;&nbsp;&nbsp;</TableCell> */}
+                    <TableCell align="left">delete&nbsp;&nbsp;&nbsp;</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {tasks &&
+                    tasks.pastDue &&
+                    tasks.pastDue.map((task, idx) => (
+                      <Tasks
+                        removeTask={removeTask}
+                        key={task.id}
+                        task={task}
+                        openUpdateForm={openUpdateForm}
+                        filter={filter}
+                        updateTask={updateTask}
+                      />
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
             {/* Display task info on side */}
           </section>
 
@@ -227,7 +434,7 @@ const Home = () => {
                     </TableCell> */}
                   </TableRow>
                 </TableHead>
-                <TableBody>
+                {/* <TableBody>
                   {tasks &&
                     tasks.map((task, idx) => (
                       <TasksMobile
@@ -239,7 +446,7 @@ const Home = () => {
                         updateTask={updateTask}
                       />
                     ))}
-                </TableBody>
+                </TableBody> */}
               </Table>
             </TableContainer>
             <button

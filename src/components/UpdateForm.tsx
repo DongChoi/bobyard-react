@@ -57,17 +57,26 @@ const UpdateForm = ({
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (
-    event
-  ) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      setFormData((prevFormData: Task) => ({
-        ...prevFormData,
-        description: prevFormData.description + "\n",
-      }));
-    }
-  };
+  // const handleKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (
+  //   event
+  // ) => {
+  //   // if (event.key === "Enter") {
+  //   //   event.preventDefault();
+  //   //   const target = event.target as HTMLTextAreaElement;
+  //   //   const { selectionStart, selectionEnd, value } = target;
+  //   //   const beforeCursor = value.substring(0, selectionStart);
+  //   //   const afterCursor = value.substring(selectionEnd, value.length);
+  //   //   const newDescription = beforeCursor + "\n" + afterCursor;
+  //   //   setFormData((prevFormData: Task) => ({
+  //   //     ...prevFormData,
+  //   //     description: newDescription,
+  //   //   }));
+  //   //   const nextLineStart = selectionStart + 1;
+  //   //   console.log(selectionStart);
+  //   //   // Move the cursor to the start of the next line
+  //   //   event.target.setSelectionRange(0, 0);
+  //   // }
+  // };
 
   const calculateTextAreaRows = (value: string): number => {
     const lineHeight = 18; // Adjust this value according to your textarea's line height
@@ -108,7 +117,7 @@ const UpdateForm = ({
           name="description"
           value={formData.description}
           onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
+          // onKeyDown={handleKeyDown}
           style={{ marginBottom: "5px" }}
         />
         <label className="p-2">Due Date</label>
@@ -163,7 +172,7 @@ const UpdateForm = ({
           color="primary"
           onClick={handleFormSubmit}
         >
-          Update
+          Save
         </button>
         <button
           className="border-solid border-1 bg-red-200 rounded mr-3 p-2"

@@ -12,6 +12,7 @@ interface Task {
   due_date: Date | string;
   updatedAt: Date;
   finished_date?: string;
+  status: string;
 }
 const Tasks = ({
   removeTask,
@@ -27,7 +28,7 @@ const Tasks = ({
   updateTask: Function;
 }) => {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
-  const [open, setOpen] = useState(false);
+
   const [isExploding, setIsExploding] = useState(false);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -48,7 +49,7 @@ const Tasks = ({
 
   const handleRemoveClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    removeTask(task.id);
+    removeTask(task.id, task.status);
   };
 
   const handleUpdateClick = (event: React.MouseEvent) => {
@@ -66,7 +67,7 @@ const Tasks = ({
       finished: boolean;
       stringToday: string;
     } = {
-      id: task.id,
+      ...task,
       finished: true,
       stringToday,
     };
@@ -76,6 +77,7 @@ const Tasks = ({
     } else {
       taskPayload.finished = false;
     }
+    console.log(taskPayload);
     updateTask(taskPayload);
     setTimeout(setIsExplodingToFalse, 7000);
   };
