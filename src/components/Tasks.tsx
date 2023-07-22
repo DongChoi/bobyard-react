@@ -12,7 +12,7 @@ interface Task {
   due_date: Date | string;
   updatedAt: Date;
   finished_date?: string;
-  status: string;
+  status?: string;
 }
 const Tasks = ({
   removeTask,

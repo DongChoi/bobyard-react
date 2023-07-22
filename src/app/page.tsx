@@ -50,11 +50,12 @@ interface Task {
 
 const Home = () => {
   const { data: session } = useSession();
-  const [tasks, setTasks] = useState<SortedTasks>({});
-  const [tasksDueToday, setTasksDueToday] = useState<Task[]>([]);
-  const [tasksDueInTheFuture, setTasksDueInTheFuture] = useState<Task[]>([]);
-  const [tasksPastDue, setTasksPastDue] = useState<Task[]>([]);
-  const [tasksCompleted, setTasksCompleted] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<SortedTasks>({
+    pastDue: [],
+    dueToday: [],
+    completed: [],
+    dueInTheFuture: [],
+  });
   const [userId, setUserId] = useState<number | null>(null);
   const [filter, setFilter] = useState("all");
   const [toggleTaskForm, setToggleTaskForm] = useState<boolean>(false);
