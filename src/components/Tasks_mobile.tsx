@@ -52,12 +52,6 @@ const TasksMobile = ({
   const finishedDate = task.finished_date
     ? new Date(task.finished_date).toLocaleDateString()
     : "In Progress";
-  const status =
-    finishedDate == "In Progress" && today > dateDue
-      ? "Past Due"
-      : finishedDate == "In Progress"
-      ? "In Progress"
-      : "Completed";
 
   const handleRemoveClick = (taskId: Number) => {
     removeTask(taskId);

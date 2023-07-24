@@ -3,7 +3,7 @@
 import Feed from "@/components/Feed";
 import { useSession } from "next-auth/react";
 import "./globals.css";
-import Tasks from "@/components/Tasks";
+import TaskRow from "@/components/TaskRow";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Form from "@/components/Form";
@@ -20,6 +20,7 @@ import {
 import UpdateForm from "@/components/UpdateForm";
 import TasksMobile from "@/components/Tasks_mobile";
 import CompletionMessage from "@/components/CompletionMessage";
+import { TaskTable } from "@/components/TaskTable";
 //this is basically  app.tsx
 
 interface User {
@@ -234,189 +235,62 @@ const Home = () => {
               <span className="text-xl">+</span> New
             </button>
             {tasks && tasks.pastDue.length > 0 && (
-              <div>
-                <br />
-                <br />
-                <b className="mr-3 ml-2">Past Due</b>
-                <TableContainer className="m-2 mt-4" component={Paper}>
-                  <Table aria-label="collapsible table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell className="ml-4" align="left">
-                          {/* do padding instead of &nbsp */}
-                          &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;
-                        </TableCell>
-                        <TableCell align="left">
-                          Date Due&nbsp;&nbsp;&nbsp;
-                        </TableCell>
-                        <TableCell align="left">
-                          Title&nbsp;&nbsp;&nbsp;
-                        </TableCell>
-                        <TableCell align="left">
-                          Created&nbsp;&nbsp;&nbsp;
-                        </TableCell>
-                        <TableCell align="left">
-                          Complete&nbsp;&nbsp;&nbsp;
-                        </TableCell>
-                        {/* <TableCell align="left">update&nbsp;&nbsp;&nbsp;</TableCell> */}
-                        <TableCell align="left">
-                          delete&nbsp;&nbsp;&nbsp;
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {tasks.pastDue.map((task, idx) => (
-                        <Tasks
-                          removeTask={removeTask}
-                          key={task.id}
-                          task={task}
-                          openUpdateForm={openUpdateForm}
-                          filter={filter}
-                          updateTask={updateTask}
-                        />
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </div>
+              <TaskTable
+                tasks={tasks.pastDue}
+                removeTask={removeTask}
+                filter={filter}
+                openUpdateForm={openUpdateForm}
+                updateTask={updateTask}
+                status={"Past Due"}
+              />
             )}
             {tasks && tasks.dueToday.length > 0 && (
-              <>
-                <br />
-                <br />
-                <b className="mr-3 ml-2">Due Today</b>
-                <TableContainer className="m-2 mt-4" component={Paper}>
-                  <Table aria-label="collapsible table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell className="ml-4" align="left">
-                          {/* do padding instead of &nbsp */}
-                          &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;
-                        </TableCell>
-                        <TableCell align="left">
-                          Date Due&nbsp;&nbsp;&nbsp;
-                        </TableCell>
-                        <TableCell align="left">
-                          Title&nbsp;&nbsp;&nbsp;
-                        </TableCell>
-                        <TableCell align="left">
-                          Created&nbsp;&nbsp;&nbsp;
-                        </TableCell>
-                        <TableCell align="left">
-                          Complete&nbsp;&nbsp;&nbsp;
-                        </TableCell>
-                        {/* <TableCell align="left">update&nbsp;&nbsp;&nbsp;</TableCell> */}
-                        <TableCell align="left">
-                          delete&nbsp;&nbsp;&nbsp;
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {tasks.dueToday.map((task, idx) => (
-                        <Tasks
-                          removeTask={removeTask}
-                          key={task.id}
-                          task={task}
-                          openUpdateForm={openUpdateForm}
-                          filter={filter}
-                          updateTask={updateTask}
-                        />
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </>
+              <TaskTable
+                tasks={tasks.dueToday}
+                removeTask={removeTask}
+                filter={filter}
+                openUpdateForm={openUpdateForm}
+                updateTask={updateTask}
+                status={"Due Today"}
+              />
+            )}
+            {tasks && tasks.dueInTheFuture.length > 0 && (
+              <TaskTable
+                tasks={tasks.dueInTheFuture}
+                removeTask={removeTask}
+                filter={filter}
+                openUpdateForm={openUpdateForm}
+                updateTask={updateTask}
+                status={"Upcoming Tasks"}
+              />
+            )}
+            {tasks && tasks.completed.length > 0 && (
+              <TaskTable
+                tasks={tasks.completed}
+                removeTask={removeTask}
+                filter={filter}
+                openUpdateForm={openUpdateForm}
+                updateTask={updateTask}
+                status={"Completed"}
+              />
             )}
             <br />
             <br />
-            <b className="mr-3 ml-2">Upcoming Tasks</b>
-            <TableContainer className="m-2 mt-4" component={Paper}>
-              <Table aria-label="collapsible table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell className="ml-4" align="left">
-                      {/* do padding instead of &nbsp */}
-                      &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="left">
-                      Date Due&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="left">Title&nbsp;&nbsp;&nbsp;</TableCell>
-                    <TableCell align="left">
-                      Created&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="left">
-                      Complete&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    {/* <TableCell align="left">update&nbsp;&nbsp;&nbsp;</TableCell> */}
-                    <TableCell align="left">delete&nbsp;&nbsp;&nbsp;</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tasks &&
-                    tasks.dueInTheFuture &&
-                    tasks.dueInTheFuture.map((task, idx) => (
-                      <Tasks
-                        removeTask={removeTask}
-                        key={task.id}
-                        task={task}
-                        openUpdateForm={openUpdateForm}
-                        filter={filter}
-                        updateTask={updateTask}
-                      />
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <br />
-            <br />
-            <b className="mr-3 ml-2">Completed</b>
-            <TableContainer className="m-2 mt-4" component={Paper}>
-              <Table aria-label="collapsible table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell className="ml-4" align="left">
-                      {/* do padding instead of &nbsp */}
-                      &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="left">
-                      Date Due&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="left">Title&nbsp;&nbsp;&nbsp;</TableCell>
-                    <TableCell align="left">
-                      Created&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="left">
-                      Complete&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    {/* <TableCell align="left">update&nbsp;&nbsp;&nbsp;</TableCell> */}
-                    <TableCell align="left">delete&nbsp;&nbsp;&nbsp;</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tasks &&
-                    tasks.completed &&
-                    tasks.completed.map((task, idx) => (
-                      <Tasks
-                        removeTask={removeTask}
-                        key={task.id}
-                        task={task}
-                        openUpdateForm={openUpdateForm}
-                        filter={filter}
-                        updateTask={updateTask}
-                      />
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <br />
-            <br />
-            {/* Display task info on side */}
           </section>
 
           {/* MOBILE */}
           <section className="md:hidden mt-4 mr-6 ml-2 flex-col">
-            <b className="mr-3 ml-2">{session.user.name}&apos;s Tasks</b>
+            <b className="mr-3 ml-2">{session.user.name}&apos;s Tasks</b>{" "}
+            <button
+              className="rounded p-4 bg-[#A8DADC] m-2"
+              //bg-blue-300
+              onClick={(evt) => {
+                evt.preventDefault();
+                setToggleTaskForm(true);
+              }}
+            >
+              New Task
+            </button>
             <TableContainer className="m-2 mt-4" component={Paper}>
               <Table aria-label="collapsible table">
                 <TableHead>
@@ -424,7 +298,7 @@ const Home = () => {
                     <TableCell className="px-0" align="left"></TableCell>
                     <TableCell align="left">Complete</TableCell>
 
-                    {/* <TableCell align="right">
+                    {/* <TableCell align="left">
                       Due Date&nbsp;&nbsp;&nbsp;
                     </TableCell> */}
                     <TableCell align="left">Title&nbsp;&nbsp;&nbsp;</TableCell>
@@ -439,31 +313,54 @@ const Home = () => {
                     </TableCell> */}
                   </TableRow>
                 </TableHead>
-                {/* <TableBody>
-                  {tasks &&
-                    tasks.map((task, idx) => (
-                      <TasksMobile
-                        removeTask={removeTask}
-                        key={task.id}
-                        task={task}
-                        openUpdateForm={openUpdateForm}
-                        filter={filter}
-                        updateTask={updateTask}
-                      />
-                    ))}
-                </TableBody> */}
+                <TableBody>
+                  {tasks && (
+                    <>
+                      {tasks.dueToday.map((task, idx) => (
+                        <TasksMobile
+                          removeTask={removeTask}
+                          key={task.id}
+                          task={task}
+                          openUpdateForm={openUpdateForm}
+                          filter={filter}
+                          updateTask={updateTask}
+                        />
+                      ))}
+                      {tasks.dueInTheFuture.map((task, idx) => (
+                        <TasksMobile
+                          removeTask={removeTask}
+                          key={task.id}
+                          task={task}
+                          openUpdateForm={openUpdateForm}
+                          filter={filter}
+                          updateTask={updateTask}
+                        />
+                      ))}
+                      {tasks.pastDue.map((task, idx) => (
+                        <TasksMobile
+                          removeTask={removeTask}
+                          key={task.id}
+                          task={task}
+                          openUpdateForm={openUpdateForm}
+                          filter={filter}
+                          updateTask={updateTask}
+                        />
+                      ))}
+                      {tasks.completed.map((task, idx) => (
+                        <TasksMobile
+                          removeTask={removeTask}
+                          key={task.id}
+                          task={task}
+                          openUpdateForm={openUpdateForm}
+                          filter={filter}
+                          updateTask={updateTask}
+                        />
+                      ))}
+                    </>
+                  )}
+                </TableBody>
               </Table>
             </TableContainer>
-            <button
-              className="rounded p-4 bg-[#A8DADC] m-2"
-              //bg-blue-300
-              onClick={(evt) => {
-                evt.preventDefault();
-                setToggleTaskForm(true);
-              }}
-            >
-              New Task
-            </button>
           </section>
           <CompletionMessage />
         </>
@@ -472,13 +369,10 @@ const Home = () => {
           <h1 className="hidden sm:flex text-center justify-center items-center pt-5  bg-gradient-to-r from-red-500 to-yellow-500 text-transparent bg-clip-text">
             You have reached Productiver
           </h1>
-          <h3 className="hidden sm:flex text-center justify-center pt-5">
-            App dedicated to increase productivity.
-          </h3>
           <h1 className="sm:hidden flex justify-center items-center pt-5  bg-gradient-to-r from-red-500 to-yellow-500 text-transparent bg-clip-text">
             Productiver
           </h1>
-          <h3 className="sm:hidden text-center flex justify-center pt-5">
+          <h3 className="flex text-center justify-center pt-5">
             App dedicated to increase productivity.
           </h3>
         </section>

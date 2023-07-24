@@ -15,7 +15,7 @@ interface Task {
   finished_date?: string;
   status?: string;
 }
-const Tasks = ({
+const TaskRow = ({
   removeTask,
   filter,
   task,
@@ -157,4 +157,4 @@ const Tasks = ({
   );
 };
 
-export default Tasks;
+export default TaskRow;
