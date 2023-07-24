@@ -75,7 +75,6 @@ const Home = () => {
     fetchUser();
   }, [session]);
   //View all tasks, and sort by title, status, and due date
-  console.log(tasks);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const sortTasks = (tasks: Task[]) => {
@@ -99,14 +98,6 @@ const Home = () => {
     if (task.finished_date) {
       return "completed";
     } else if (dateDue.getTime() < today.getTime()) {
-      console.log(
-        "gettingtime",
-        dateDue,
-        dateDue.getTime(),
-        today,
-        today.getTime(),
-        task
-      );
       return "pastDue";
     } else if (dateDue.getTime() == today.getTime()) {
       return "dueToday";
@@ -125,7 +116,7 @@ const Home = () => {
     const status = determineStatus(resp.data.newTask);
     const newStatusArray = [...tasks[status], resp.data.newTask];
     const updatedTasks = { ...tasks, [status]: newStatusArray };
-    console.log(updatedTasks);
+
     setTasks(updatedTasks);
     setToggleTaskForm(false);
   }
@@ -178,7 +169,7 @@ const Home = () => {
     try {
       const resp = await axios.delete(`api/tasks/${taskId}`);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
     const updatedStatusTasks = tasks[status].filter(
       (task) => task.id !== taskId
@@ -191,7 +182,6 @@ const Home = () => {
   /*********************************** FORMS ***********************************/
   function openUpdateForm(task: Task) {
     setTask(task);
-    console.log(task);
   }
 
   function cancelForm() {
@@ -243,9 +233,103 @@ const Home = () => {
             >
               <span className="text-xl">+</span> New
             </button>
+            {tasks && tasks.pastDue.length > 0 && (
+              <div>
+                <br />
+                <br />
+                <b className="mr-3 ml-2">Past Due</b>
+                <TableContainer className="m-2 mt-4" component={Paper}>
+                  <Table aria-label="collapsible table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell className="ml-4" align="left">
+                          {/* do padding instead of &nbsp */}
+                          &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;
+                        </TableCell>
+                        <TableCell align="left">
+                          Date Due&nbsp;&nbsp;&nbsp;
+                        </TableCell>
+                        <TableCell align="left">
+                          Title&nbsp;&nbsp;&nbsp;
+                        </TableCell>
+                        <TableCell align="left">
+                          Created&nbsp;&nbsp;&nbsp;
+                        </TableCell>
+                        <TableCell align="left">
+                          Complete&nbsp;&nbsp;&nbsp;
+                        </TableCell>
+                        {/* <TableCell align="left">update&nbsp;&nbsp;&nbsp;</TableCell> */}
+                        <TableCell align="left">
+                          delete&nbsp;&nbsp;&nbsp;
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {tasks.pastDue.map((task, idx) => (
+                        <Tasks
+                          removeTask={removeTask}
+                          key={task.id}
+                          task={task}
+                          openUpdateForm={openUpdateForm}
+                          filter={filter}
+                          updateTask={updateTask}
+                        />
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
+            )}
+            {tasks && tasks.dueToday.length > 0 && (
+              <>
+                <br />
+                <br />
+                <b className="mr-3 ml-2">Due Today</b>
+                <TableContainer className="m-2 mt-4" component={Paper}>
+                  <Table aria-label="collapsible table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell className="ml-4" align="left">
+                          {/* do padding instead of &nbsp */}
+                          &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;
+                        </TableCell>
+                        <TableCell align="left">
+                          Date Due&nbsp;&nbsp;&nbsp;
+                        </TableCell>
+                        <TableCell align="left">
+                          Title&nbsp;&nbsp;&nbsp;
+                        </TableCell>
+                        <TableCell align="left">
+                          Created&nbsp;&nbsp;&nbsp;
+                        </TableCell>
+                        <TableCell align="left">
+                          Complete&nbsp;&nbsp;&nbsp;
+                        </TableCell>
+                        {/* <TableCell align="left">update&nbsp;&nbsp;&nbsp;</TableCell> */}
+                        <TableCell align="left">
+                          delete&nbsp;&nbsp;&nbsp;
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {tasks.dueToday.map((task, idx) => (
+                        <Tasks
+                          removeTask={removeTask}
+                          key={task.id}
+                          task={task}
+                          openUpdateForm={openUpdateForm}
+                          filter={filter}
+                          updateTask={updateTask}
+                        />
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </>
+            )}
             <br />
             <br />
-            <b className="mr-3 ml-2">Due Today</b>
+            <b className="mr-3 ml-2">Upcoming Tasks</b>
             <TableContainer className="m-2 mt-4" component={Paper}>
               <Table aria-label="collapsible table">
                 <TableHead>
@@ -270,8 +354,8 @@ const Home = () => {
                 </TableHead>
                 <TableBody>
                   {tasks &&
-                    tasks.dueToday &&
-                    tasks.dueToday.map((task, idx) => (
+                    tasks.dueInTheFuture &&
+                    tasks.dueInTheFuture.map((task, idx) => (
                       <Tasks
                         removeTask={removeTask}
                         key={task.id}
@@ -327,86 +411,6 @@ const Home = () => {
             </TableContainer>
             <br />
             <br />
-            <b className="mr-3 ml-2">Due In The Future</b>
-            <TableContainer className="m-2 mt-4" component={Paper}>
-              <Table aria-label="collapsible table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell className="ml-4" align="left">
-                      {/* do padding instead of &nbsp */}
-                      &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="left">
-                      Date Due&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="left">Title&nbsp;&nbsp;&nbsp;</TableCell>
-                    <TableCell align="left">
-                      Created&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="left">
-                      Complete&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    {/* <TableCell align="left">update&nbsp;&nbsp;&nbsp;</TableCell> */}
-                    <TableCell align="left">delete&nbsp;&nbsp;&nbsp;</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tasks &&
-                    tasks.dueInTheFuture &&
-                    tasks.dueInTheFuture.map((task, idx) => (
-                      <Tasks
-                        removeTask={removeTask}
-                        key={task.id}
-                        task={task}
-                        openUpdateForm={openUpdateForm}
-                        filter={filter}
-                        updateTask={updateTask}
-                      />
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <br />
-            <br />
-            <b className="mr-3 ml-2">Past Due</b>
-            <TableContainer className="m-2 mt-4" component={Paper}>
-              <Table aria-label="collapsible table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell className="ml-4" align="left">
-                      {/* do padding instead of &nbsp */}
-                      &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="left">
-                      Date Due&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="left">Title&nbsp;&nbsp;&nbsp;</TableCell>
-                    <TableCell align="left">
-                      Created&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    <TableCell align="left">
-                      Complete&nbsp;&nbsp;&nbsp;
-                    </TableCell>
-                    {/* <TableCell align="left">update&nbsp;&nbsp;&nbsp;</TableCell> */}
-                    <TableCell align="left">delete&nbsp;&nbsp;&nbsp;</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tasks &&
-                    tasks.pastDue &&
-                    tasks.pastDue.map((task, idx) => (
-                      <Tasks
-                        removeTask={removeTask}
-                        key={task.id}
-                        task={task}
-                        openUpdateForm={openUpdateForm}
-                        filter={filter}
-                        updateTask={updateTask}
-                      />
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
             {/* Display task info on side */}
           </section>
 

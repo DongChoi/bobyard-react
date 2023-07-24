@@ -83,7 +83,7 @@ const UpdateForm = ({
     const rows = Math.ceil(value.split("\n").length);
     return rows < 4 ? 4 : rows;
   };
-  console.log(task);
+
   const handleCalendarChange = async (event: any) => {
     const dateString = event.$d.toLocaleString().split(",")[0];
 

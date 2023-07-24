@@ -3,6 +3,7 @@ import { Checkbox, TableCell, TableRow } from "@mui/material";
 import ConfettiExplosion from "react-confetti-explosion";
 import React, { useState } from "react";
 import Image from "next/image";
+import { WidthFull } from "@mui/icons-material";
 interface Task {
   id: number;
   title: string;
@@ -77,7 +78,7 @@ const Tasks = ({
     } else {
       taskPayload.finished = false;
     }
-    console.log(taskPayload);
+
     updateTask(taskPayload);
     setTimeout(setIsExplodingToFalse, 7000);
   };
@@ -113,7 +114,9 @@ const Tasks = ({
         <TableCell align="left">
           {dateDue.toLocaleDateString()}&nbsp;&nbsp;&nbsp;
         </TableCell>
-        <TableCell align="left">{title}&nbsp;&nbsp;&nbsp;</TableCell>
+        <TableCell width={500} align="left">
+          {title}&nbsp;&nbsp;&nbsp;
+        </TableCell>
         <TableCell align="left">
           {dateCreated.toLocaleDateString()}&nbsp;&nbsp;&nbsp;
         </TableCell>
