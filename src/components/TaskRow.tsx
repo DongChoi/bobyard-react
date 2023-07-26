@@ -98,8 +98,8 @@ const TaskRow = ({
         {/* future implementation for getting a graph for api call */}
         <TableCell align="left">
           <span
-            className={`
-            ml-4
+            className={` 
+            ml-4 whitespace-nowrap
             ${
               status == "In Progress"
                 ? "text-orange-300"

@@ -295,7 +295,6 @@ const Home = () => {
               <Table aria-label="collapsible table">
                 <TableHead>
                   <TableRow>
-                    <TableCell className="px-0" align="left"></TableCell>
                     <TableCell align="left">Complete</TableCell>
 
                     {/* <TableCell align="left">

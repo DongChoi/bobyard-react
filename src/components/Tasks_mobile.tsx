@@ -14,7 +14,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import React, { useState } from "react";
 import UpdateIcon from "@mui/icons-material/Update";
-import { UpdateDisabled } from "@mui/icons-material";
+import { UpdateDisabled, WidthFull } from "@mui/icons-material";
 import Image from "next/image";
 interface Task {
   id: number;
@@ -25,6 +25,7 @@ interface Task {
   due_date: Date | string;
   updatedAt: Date;
   finished_date?: string;
+  status?: string;
 }
 
 const TasksMobile = ({
@@ -78,22 +79,16 @@ const TasksMobile = ({
 
   return (
     <React.Fragment>
-      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+      <TableRow
+        sx={{ "& > *": { borderBottom: "unset" }, overflow: "hidden" }}
+        onClick={() => setOpen(!open)}
+      >
         {/* future implementation for getting a graph for api call */}
-        <TableCell align="center">
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
         <TableCell align="left">
           <Checkbox
             {...label}
             onClick={handleToggleTask}
-            checked={status === "Completed" ? true : false}
+            checked={task.status === "completed" ? true : false}
           />
         </TableCell>
         {/* <TableCell align="right">
@@ -148,11 +143,13 @@ const TasksMobile = ({
               <Typography variant="h6" gutterBottom component="div">
                 Description
               </Typography>
-              <pre>
+              {/* <pre> */}
+              <div style={{ whiteSpace: "pre-line" }}>
                 <Typography variant="body1" gutterBottom component="div">
                   {description}
                 </Typography>
-              </pre>
+              </div>
+              {/* </pre> */}
             </Box>{" "}
             <Box sx={{ margin: 1 }}>
               <Typography variant="button" gutterBottom component="div">
@@ -162,14 +159,14 @@ const TasksMobile = ({
                 Status:{" "}
                 <span
                   className={
-                    status == "In Progress"
+                    task.status == "dueToday"
                       ? "text-orange-400"
-                      : status == "Completed"
+                      : task.status == "completed"
                       ? "text-green-600"
                       : "text-red-600"
                   }
                 >
-                  {status}&nbsp;&nbsp;&nbsp;
+                  {task.status}&nbsp;&nbsp;&nbsp;
                 </span>{" "}
                 <br />
                 Date Due: {dateDue.toLocaleDateString()} <br />
