@@ -61,6 +61,15 @@ const Home = () => {
   const [filter, setFilter] = useState("all");
   const [toggleTaskForm, setToggleTaskForm] = useState<boolean>(false);
   const [task, setTask] = useState<Task | null>(null);
+  const [filteredOption, setSelectedOption] = useState<
+    keyof SortedTasks | "all"
+  >("all");
+
+  const handleFilterSelectChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setSelectedOption(event.target.value as keyof SortedTasks);
+  };
 
   /********************************** On Mount **********************************/
   useEffect(() => {
@@ -291,75 +300,115 @@ const Home = () => {
             >
               New Task
             </button>
-            <TableContainer className="m-2 mt-4" component={Paper}>
-              <Table aria-label="collapsible table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="left">Complete</TableCell>
+            <select
+              className="p-4 mx-3 rounded bg-blue-400"
+              value={filteredOption}
+              onChange={handleFilterSelectChange}
+            >
+              <option value="all">All</option>
+              <option value="dueToday">Due Today</option>
+              <option value="pastDue">Past Due</option>
+              <option value="dueInTheFuture">Upcoming</option>
+              <option value="completed">Completed</option>
+            </select>
+            {filteredOption != "all" ? (
+              <TableContainer className="m-2 mt-4" component={Paper}>
+                <Table aria-label="collapsible table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="left">Complete</TableCell>
+                      <TableCell align="left">
+                        Title&nbsp;&nbsp;&nbsp;
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {tasks[filteredOption].map((task, idx) => (
+                      <TasksMobile
+                        removeTask={removeTask}
+                        key={task.id}
+                        task={task}
+                        openUpdateForm={openUpdateForm}
+                        filter={filter}
+                        updateTask={updateTask}
+                      />
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <TableContainer className="m-2 mt-4" component={Paper}>
+                <Table aria-label="collapsible table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="left">Complete</TableCell>
 
-                    {/* <TableCell align="left">
+                      {/* <TableCell align="left">
                       Due Date&nbsp;&nbsp;&nbsp;
                     </TableCell> */}
-                    <TableCell align="left">Title&nbsp;&nbsp;&nbsp;</TableCell>
-                    {/* <TableCell align="right">
+                      <TableCell align="left">
+                        Title&nbsp;&nbsp;&nbsp;
+                      </TableCell>
+                      {/* <TableCell align="right">
                       Created&nbsp;&nbsp;&nbsp;
                     </TableCell> */}
-                    {/* <TableCell align="right">
+                      {/* <TableCell align="right">
                       update&nbsp;&nbsp;&nbsp;
                     </TableCell> */}
-                    {/* <TableCell align="right">
+                      {/* <TableCell align="right">
                       remove&nbsp;&nbsp;&nbsp;
                     </TableCell> */}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tasks && (
-                    <>
-                      {tasks.dueToday.map((task, idx) => (
-                        <TasksMobile
-                          removeTask={removeTask}
-                          key={task.id}
-                          task={task}
-                          openUpdateForm={openUpdateForm}
-                          filter={filter}
-                          updateTask={updateTask}
-                        />
-                      ))}
-                      {tasks.dueInTheFuture.map((task, idx) => (
-                        <TasksMobile
-                          removeTask={removeTask}
-                          key={task.id}
-                          task={task}
-                          openUpdateForm={openUpdateForm}
-                          filter={filter}
-                          updateTask={updateTask}
-                        />
-                      ))}
-                      {tasks.pastDue.map((task, idx) => (
-                        <TasksMobile
-                          removeTask={removeTask}
-                          key={task.id}
-                          task={task}
-                          openUpdateForm={openUpdateForm}
-                          filter={filter}
-                          updateTask={updateTask}
-                        />
-                      ))}
-                      {tasks.completed.map((task, idx) => (
-                        <TasksMobile
-                          removeTask={removeTask}
-                          key={task.id}
-                          task={task}
-                          openUpdateForm={openUpdateForm}
-                          filter={filter}
-                          updateTask={updateTask}
-                        />
-                      ))}
-                    </>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {tasks && (
+                      <>
+                        {tasks.dueToday.map((task, idx) => (
+                          <TasksMobile
+                            removeTask={removeTask}
+                            key={task.id}
+                            task={task}
+                            openUpdateForm={openUpdateForm}
+                            filter={filter}
+                            updateTask={updateTask}
+                          />
+                        ))}
+                        {tasks.dueInTheFuture.map((task, idx) => (
+                          <TasksMobile
+                            removeTask={removeTask}
+                            key={task.id}
+                            task={task}
+                            openUpdateForm={openUpdateForm}
+                            filter={filter}
+                            updateTask={updateTask}
+                          />
+                        ))}
+                        {tasks.pastDue.map((task, idx) => (
+                          <TasksMobile
+                            removeTask={removeTask}
+                            key={task.id}
+                            task={task}
+                            openUpdateForm={openUpdateForm}
+                            filter={filter}
+                            updateTask={updateTask}
+                          />
+                        ))}
+                        {tasks.completed.map((task, idx) => (
+                          <TasksMobile
+                            removeTask={removeTask}
+                            key={task.id}
+                            task={task}
+                            openUpdateForm={openUpdateForm}
+                            filter={filter}
+                            updateTask={updateTask}
+                          />
+                        ))}
+                      </>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
           </section>
           <CompletionMessage />
         </>
