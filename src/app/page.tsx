@@ -245,12 +245,13 @@ const Home = () => {
               if (tasks[typedKey].length > 0) {
                 return (
                   <TaskTable
+                    key={typedKey}
                     tasks={tasks[typedKey]}
                     removeTask={removeTask}
                     filter={filter}
                     openUpdateForm={openUpdateForm}
                     updateTask={updateTask}
-                    status={key}
+                    status={typedKey}
                   />
                 );
               }
@@ -327,6 +328,7 @@ const Home = () => {
                         return tasks[typedKey].map((task) => {
                           return (
                             <TasksMobile
+                              key={typedKey}
                               task={task}
                               removeTask={removeTask}
                               filter={filter}
