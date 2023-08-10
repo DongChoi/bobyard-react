@@ -1,9 +1,7 @@
 "use client";
 
-import Feed from "@/components/Feed";
 import { useSession } from "next-auth/react";
 import "./globals.css";
-import TaskRow from "@/components/TaskRow";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Form from "@/components/Form";
@@ -15,13 +13,11 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from "@mui/material";
 import UpdateForm from "@/components/UpdateForm";
 import TasksMobile from "@/components/Tasks_mobile";
 import CompletionMessage from "@/components/CompletionMessage";
 import { TaskTable } from "@/components/TaskTable";
-//this is basically  app.tsx
 
 interface User {
   id: number | string;
@@ -31,10 +27,10 @@ interface User {
 }
 
 interface SortedTasks {
-  pastDue: Task[];
-  dueToday: Task[];
-  completed: Task[];
-  dueInTheFuture: Task[];
+  "Past Due": Task[];
+  "Due Today": Task[];
+  Upcoming: Task[];
+  Completed: Task[];
 }
 
 interface Task {
@@ -52,10 +48,10 @@ interface Task {
 const Home = () => {
   const { data: session } = useSession();
   const [tasks, setTasks] = useState<SortedTasks>({
-    pastDue: [],
-    dueToday: [],
-    completed: [],
-    dueInTheFuture: [],
+    "Past Due": [],
+    "Due Today": [],
+    Upcoming: [],
+    Completed: [],
   });
   const [userId, setUserId] = useState<number | null>(null);
   const [filter, setFilter] = useState("all");
@@ -78,7 +74,7 @@ const Home = () => {
         const resp = await axios.post("/api/user/", { session: session.user });
         const sortedTasks = sortTasks(resp.data.user.tasks);
         setTasks(sortedTasks);
-
+        console.log(sortedTasks);
         setUserId(resp.data.user.id);
       }
     }
@@ -89,10 +85,10 @@ const Home = () => {
   today.setHours(0, 0, 0, 0);
   const sortTasks = (tasks: Task[]) => {
     const sortedTasks: SortedTasks = {
-      pastDue: [],
-      dueToday: [],
-      completed: [],
-      dueInTheFuture: [],
+      "Past Due": [],
+      "Due Today": [],
+      Upcoming: [],
+      Completed: [],
     };
     tasks.forEach((task) => {
       const status = determineStatus(task);
@@ -106,13 +102,13 @@ const Home = () => {
     const dateDue = new Date(task.due_date);
     dateDue.setHours(0, 0, 0, 0);
     if (task.finished_date) {
-      return "completed";
+      return "Completed";
     } else if (dateDue.getTime() < today.getTime()) {
-      return "pastDue";
+      return "Past Due";
     } else if (dateDue.getTime() == today.getTime()) {
-      return "dueToday";
+      return "Due Today";
     } else {
-      return "dueInTheFuture";
+      return "Upcoming";
     }
   };
   /************************* TASK PUT PATCH DELETE POST *************************/
@@ -157,6 +153,7 @@ const Home = () => {
         };
         setTasks(updatedTasks);
       } else {
+        resp.data.updatedTask.status = newStatus;
         const updatedNewStatusTasks = [
           ...tasks[newStatus],
           resp.data.updatedTask,
@@ -168,7 +165,6 @@ const Home = () => {
         };
         setTasks(updatedTasks);
       }
-      // console.log("UPDATED TASKS", updatedTasks);
     } catch (e) {
       console.error(e);
     }
@@ -186,7 +182,7 @@ const Home = () => {
     );
     const updatedTasks = { ...tasks, [status]: updatedStatusTasks };
     setTasks(updatedTasks);
-    //add animation to show that deletion was successful!
+    //TODO: add animation to show that deletion was successful!
   }
 
   /*********************************** FORMS ***********************************/
@@ -243,46 +239,22 @@ const Home = () => {
             >
               <span className="text-xl">+</span> New
             </button>
-            {tasks && tasks.pastDue.length > 0 && (
-              <TaskTable
-                tasks={tasks.pastDue}
-                removeTask={removeTask}
-                filter={filter}
-                openUpdateForm={openUpdateForm}
-                updateTask={updateTask}
-                status={"Past Due"}
-              />
-            )}
-            {tasks && tasks.dueToday.length > 0 && (
-              <TaskTable
-                tasks={tasks.dueToday}
-                removeTask={removeTask}
-                filter={filter}
-                openUpdateForm={openUpdateForm}
-                updateTask={updateTask}
-                status={"Due Today"}
-              />
-            )}
-            {tasks && tasks.dueInTheFuture.length > 0 && (
-              <TaskTable
-                tasks={tasks.dueInTheFuture}
-                removeTask={removeTask}
-                filter={filter}
-                openUpdateForm={openUpdateForm}
-                updateTask={updateTask}
-                status={"Upcoming Tasks"}
-              />
-            )}
-            {tasks && tasks.completed.length > 0 && (
-              <TaskTable
-                tasks={tasks.completed}
-                removeTask={removeTask}
-                filter={filter}
-                openUpdateForm={openUpdateForm}
-                updateTask={updateTask}
-                status={"Completed"}
-              />
-            )}
+            {Object.keys(tasks).map((key) => {
+              const typedKey = key as keyof SortedTasks;
+
+              if (tasks[typedKey].length > 0) {
+                return (
+                  <TaskTable
+                    tasks={tasks[typedKey]}
+                    removeTask={removeTask}
+                    filter={filter}
+                    openUpdateForm={openUpdateForm}
+                    updateTask={updateTask}
+                    status={key}
+                  />
+                );
+              }
+            })}
             <br />
             <br />
           </section>
@@ -290,6 +262,17 @@ const Home = () => {
           {/* MOBILE */}
           <section className="md:hidden mt-4 mr-6 ml-2 flex-col">
             <b className="mr-3 ml-2">{session.user.name}&apos;s Tasks</b>{" "}
+            <select
+              className="p-4 mx-3 rounded bg-blue-400"
+              value={filteredOption}
+              onChange={handleFilterSelectChange}
+            >
+              <option value="all">All</option>
+              <option value="Due Today">Due Today</option>
+              <option value="Past Due">Past Due</option>
+              <option value="Upcoming">Upcoming</option>
+              <option value="Completed">Completed</option>
+            </select>
             <button
               className="rounded p-4 bg-[#A8DADC] m-2"
               //bg-blue-300
@@ -300,17 +283,6 @@ const Home = () => {
             >
               New Task
             </button>
-            <select
-              className="p-4 mx-3 rounded bg-blue-400"
-              value={filteredOption}
-              onChange={handleFilterSelectChange}
-            >
-              <option value="all">All</option>
-              <option value="dueToday">Due Today</option>
-              <option value="pastDue">Past Due</option>
-              <option value="dueInTheFuture">Upcoming</option>
-              <option value="completed">Completed</option>
-            </select>
             {filteredOption != "all" ? (
               <TableContainer className="m-2 mt-4" component={Paper}>
                 <Table aria-label="collapsible table">
@@ -342,69 +314,29 @@ const Home = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell align="left">Complete</TableCell>
-
-                      {/* <TableCell align="left">
-                      Due Date&nbsp;&nbsp;&nbsp;
-                    </TableCell> */}
                       <TableCell align="left">
                         Title&nbsp;&nbsp;&nbsp;
                       </TableCell>
-                      {/* <TableCell align="right">
-                      Created&nbsp;&nbsp;&nbsp;
-                    </TableCell> */}
-                      {/* <TableCell align="right">
-                      update&nbsp;&nbsp;&nbsp;
-                    </TableCell> */}
-                      {/* <TableCell align="right">
-                      remove&nbsp;&nbsp;&nbsp;
-                    </TableCell> */}
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {tasks && (
-                      <>
-                        {tasks.dueToday.map((task, idx) => (
-                          <TasksMobile
-                            removeTask={removeTask}
-                            key={task.id}
-                            task={task}
-                            openUpdateForm={openUpdateForm}
-                            filter={filter}
-                            updateTask={updateTask}
-                          />
-                        ))}
-                        {tasks.dueInTheFuture.map((task, idx) => (
-                          <TasksMobile
-                            removeTask={removeTask}
-                            key={task.id}
-                            task={task}
-                            openUpdateForm={openUpdateForm}
-                            filter={filter}
-                            updateTask={updateTask}
-                          />
-                        ))}
-                        {tasks.pastDue.map((task, idx) => (
-                          <TasksMobile
-                            removeTask={removeTask}
-                            key={task.id}
-                            task={task}
-                            openUpdateForm={openUpdateForm}
-                            filter={filter}
-                            updateTask={updateTask}
-                          />
-                        ))}
-                        {tasks.completed.map((task, idx) => (
-                          <TasksMobile
-                            removeTask={removeTask}
-                            key={task.id}
-                            task={task}
-                            openUpdateForm={openUpdateForm}
-                            filter={filter}
-                            updateTask={updateTask}
-                          />
-                        ))}
-                      </>
-                    )}
+                    {Object.keys(tasks).map((key) => {
+                      const typedKey = key as keyof SortedTasks;
+
+                      if (tasks[typedKey].length > 0) {
+                        return tasks[typedKey].map((task) => {
+                          return (
+                            <TasksMobile
+                              task={task}
+                              removeTask={removeTask}
+                              filter={filter}
+                              openUpdateForm={openUpdateForm}
+                              updateTask={updateTask}
+                            />
+                          );
+                        });
+                      }
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>

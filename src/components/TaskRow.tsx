@@ -3,7 +3,6 @@ import { Checkbox, TableCell, TableRow } from "@mui/material";
 import ConfettiExplosion from "react-confetti-explosion";
 import React, { useState } from "react";
 import Image from "next/image";
-import { WidthFull } from "@mui/icons-material";
 interface Task {
   id: number;
   title: string;
@@ -29,7 +28,7 @@ const TaskRow = ({
   updateTask: Function;
 }) => {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
+  console.log(task);
   const [isExploding, setIsExploding] = useState(false);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -41,12 +40,6 @@ const TaskRow = ({
   const finishedDate = task.finished_date
     ? new Date(task.finished_date).toLocaleDateString()
     : "In Progress";
-  const status =
-    finishedDate == "In Progress" && today > dateDue
-      ? "Past Due"
-      : finishedDate == "In Progress"
-      ? "In Progress"
-      : "Completed";
 
   const handleRemoveClick = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -56,9 +49,6 @@ const TaskRow = ({
   const handleUpdateClick = (event: React.MouseEvent) => {
     openUpdateForm(task);
   };
-
-  // console.log(task.id, "task.finishedDate", task.finished_date);
-  // console.log("finishedDate", finishedDate);
 
   const handleToggleTask = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -101,14 +91,14 @@ const TaskRow = ({
             className={` 
             ml-4 whitespace-nowrap
             ${
-              status == "In Progress"
+              task.status == "Due Today" || task.status == "Upcoming"
                 ? "text-orange-300"
-                : status == "Completed"
+                : task.status == "Completed"
                 ? "text-green-600"
                 : "text-amber-600"
             }`}
           >
-            {status}&nbsp;&nbsp;&nbsp;
+            {task.status}&nbsp;&nbsp;&nbsp;
           </span>
         </TableCell>
         <TableCell align="left">
@@ -128,20 +118,9 @@ const TaskRow = ({
             sx={{ zIndex: 0 }}
             {...label}
             onClick={handleToggleTask}
-            checked={status === "Completed" ? true : false}
+            checked={task.status === "Completed" ? true : false}
           />
         </TableCell>
-        {/* <TableCell align="left" className=""> */}
-        {/* <Image
-            className="pb-0  mr-3"
-            src="edi.svg"
-            alt="edit svg"
-            width={20}
-            height={20}
-            onClick={handleUpdateClick}
-          /> */}
-        {/* &nbsp;&nbsp;&nbsp; */}
-        {/* </TableCell> */}
         <TableCell align="left">
           <Image
             className="pb-0 mr-3 cursor-pointer"

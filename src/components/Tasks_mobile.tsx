@@ -3,18 +3,12 @@ import {
   Box,
   Checkbox,
   Collapse,
-  IconButton,
-  Table,
   TableCell,
-  TableHead,
   TableRow,
   Typography,
 } from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import React, { useState } from "react";
-import UpdateIcon from "@mui/icons-material/Update";
-import { UpdateDisabled, WidthFull } from "@mui/icons-material";
+
 import Image from "next/image";
 interface Task {
   id: number;
@@ -58,9 +52,6 @@ const TasksMobile = ({
     removeTask(taskId);
   };
 
-  // console.log(task.id, "task.finishedDate", task.finished_date);
-  // console.log("finishedDate", finishedDate);
-
   const handleToggleTask = () => {
     const stringToday = today.toLocaleDateString();
     const taskPayload: { finished: boolean; stringToday: string } = {
@@ -91,50 +82,8 @@ const TasksMobile = ({
             checked={task.status === "completed" ? true : false}
           />
         </TableCell>
-        {/* <TableCell align="right">
-          <span
-            className={
-              status == "In Progress"
-                ? "text-orange-400"
-                : status == "Completed"
-                ? "text-green-600"
-                : "text-red-600"
-            }
-          >
-            {status}&nbsp;&nbsp;&nbsp;
-          </span>
-        </TableCell> */}
-        {/* <TableCell align="right">
-          {dateDue.toLocaleDateString()}&nbsp;&nbsp;&nbsp;
-        </TableCell> */}
-        <TableCell align="left">{title}&nbsp;&nbsp;&nbsp;</TableCell>
-        {/* <TableCell align="right">
-          {dateCreated.toLocaleDateString()}&nbsp;&nbsp;&nbsp;
-        </TableCell> */}
 
-        {/* <TableCell align="right" className="">
-          <Image
-            className="mx-auto pb-0  mr-3"
-            src="edit.svg"
-            alt="edit svg"
-            width={20}
-            height={20}
-            onClick={() => {
-              openUpdateForm(task);
-            }}
-          />
-          &nbsp;&nbsp;&nbsp;
-        </TableCell> */}
-        {/* <TableCell align="right">
-          <button
-            onClick={() => {
-              handleRemoveClick(task.id!);
-            }}
-            style={{ backgroundColor: "white", border: "0px" }}
-          >
-            X&nbsp;&nbsp;&nbsp;&nbsp;
-          </button>
-        </TableCell> */}
+        <TableCell align="left">{title}&nbsp;&nbsp;&nbsp;</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -159,9 +108,9 @@ const TasksMobile = ({
                 Status:{" "}
                 <span
                   className={
-                    task.status == "dueToday"
+                    task.status == "Due Today" || task.status == "Upcoming"
                       ? "text-orange-400"
-                      : task.status == "completed"
+                      : task.status == "Completed"
                       ? "text-green-600"
                       : "text-red-600"
                   }
