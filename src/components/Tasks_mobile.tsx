@@ -35,6 +35,7 @@ const TasksMobile = ({
   openUpdateForm: Function;
   updateTask: Function;
 }) => {
+  console.log(task);
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const [open, setOpen] = useState(false);
   const today = new Date();

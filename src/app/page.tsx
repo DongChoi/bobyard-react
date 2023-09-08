@@ -74,7 +74,6 @@ const Home = () => {
         const resp = await axios.post("/api/user/", { session: session.user });
         const sortedTasks = sortTasks(resp.data.user.tasks);
         setTasks(sortedTasks);
-        console.log(sortedTasks);
         setUserId(resp.data.user.id);
       }
     }
