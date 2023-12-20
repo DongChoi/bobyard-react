@@ -4,14 +4,12 @@ import { Provider } from "@/components/Provider";
 //when using metadata, you have to Type the next's Metadata type
 import { Metadata } from "next";
 import "./globals.css";
-import { useSession } from "next-auth/react";
 
-//this is where i think i will add session cookies
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Productiver",
-  description: "Todo List by Andrew Choi",
+  title: "Bobyard",
+  description: "Bobyard takehome by Andrew Choi",
 };
 
 export default function RootLayout({
